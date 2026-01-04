@@ -1,17 +1,15 @@
 
 package com.gotak.address.plugin;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 
 import com.atak.plugins.impl.AbstractPluginTool;
-import com.atakmap.android.ipc.AtakBroadcast;
-import com.atakmap.android.navigation.NavButtonManager;
-import com.atakmap.android.navigation.models.NavButtonModel;
+import com.gotak.address.search.AddressSearchDropDown;
 import gov.tak.api.util.Disposable;
 
+/**
+ * Plugin toolbar tool that opens the address search when tapped.
+ */
 public class AddressTool extends AbstractPluginTool implements Disposable {
 
     private final static String TAG = "AddressTool";
@@ -20,42 +18,12 @@ public class AddressTool extends AbstractPluginTool implements Disposable {
         super(context,
                 context.getString(R.string.app_name),
                 context.getString(R.string.app_name),
-                context.getResources().getDrawable(R.drawable.ic_launcher),
-                "com.gotak.address.SHOW_HELLO_WORLD");
-
-        AtakBroadcast.getInstance().registerReceiver(br,
-                new AtakBroadcast.DocumentedIntentFilter(
-                        "com.gotak.address.plugin.iconcount"));
-
+                context.getResources().getDrawable(R.drawable.ic_launcher, null),
+                AddressSearchDropDown.SHOW_SEARCH);
     }
-
-    private final BroadcastReceiver br = new BroadcastReceiver() {
-        private int count = 0;
-
-        @Override
-        public void onReceive(Context c, Intent intent) {
-            // Get the button model used by this plugin
-            NavButtonModel mdl = NavButtonManager.getInstance()
-                    .getModelByPlugin(AddressTool.this);
-            if (mdl != null) {
-                // Increment the badge count and refresh
-                mdl.setBadgeCount(++count);
-
-                //see setSelectedImage to modify the color of your tool
-                //mdl.setSelectedImage();
-
-                // you can also change out the model by removing it and adding it back in
-                // NavButtonManager.getInstance().removeButtonModel(); and NavButtonManager.getInstance().addButtonModel();
-                
-                NavButtonManager.getInstance().notifyModelChanged(mdl);
-                Log.d(TAG, "increment visual count to: " + count);
-            }
-        }
-    };
 
     @Override
     public void dispose() {
-        AtakBroadcast.getInstance().unregisterReceiver(br);
+        // Nothing to clean up
     }
-
 }

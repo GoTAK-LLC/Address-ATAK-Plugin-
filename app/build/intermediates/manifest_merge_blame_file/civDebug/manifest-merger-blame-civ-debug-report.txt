@@ -1,0 +1,164 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.gotak.address.plugin"
+4    android:versionCode="1767509386"
+5    android:versionName="1.0.1 (cd745518) - [5.2.0]" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+8-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="34" />
+9-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml
+10
+11    <!-- USB Host feature for RIDAR device communication -->
+12    <uses-feature
+12-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:7:5-87
+13        android:name="android.hardware.usb.host"
+13-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:7:19-59
+14        android:required="false" />
+14-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:7:60-84
+15
+16    <!-- Bluetooth permissions for wireless RIDAR connection and EUD BLE scanning -->
+17    <uses-feature
+17-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:10:5-88
+18        android:name="android.hardware.bluetooth"
+18-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:10:19-60
+19        android:required="false" />
+19-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:10:61-85
+20    <uses-feature
+20-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:11:5-91
+21        android:name="android.hardware.bluetooth_le"
+21-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:11:19-63
+22        android:required="false" />
+22-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:11:64-88
+23
+24    <uses-permission
+24-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:12:5-95
+25        android:name="android.permission.BLUETOOTH"
+25-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:12:22-65
+26        android:maxSdkVersion="30" />
+26-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:12:66-92
+27    <uses-permission
+27-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:13:5-101
+28        android:name="android.permission.BLUETOOTH_ADMIN"
+28-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:13:22-71
+29        android:maxSdkVersion="30" />
+29-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:13:72-98
+30    <!-- Android 12+ Bluetooth permissions - need location for Remote ID drone detection -->
+31    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+31-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:15:5-76
+31-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:15:22-73
+32    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+32-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:16:5-93
+32-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:16:22-70
+33
+34    <!-- WiFi permissions for EUD Remote ID WiFi Beacon scanning -->
+35    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+35-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:19:5-76
+35-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:19:22-73
+36    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+36-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:20:5-76
+36-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:20:22-73
+37    <!-- Android 13+ WiFi Nearby permission - need location for Remote ID scanning -->
+38    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
+38-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:22:5-105
+38-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:22:22-75
+39
+40    <!-- WiFi Aware (NaN) for EUD Remote ID scanning - optional feature -->
+41    <uses-feature
+41-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:25:5-89
+42        android:name="android.hardware.wifi.aware"
+42-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:25:19-61
+43        android:required="false" />
+43-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:25:62-86
+44
+45    <!-- Location permissions required for Remote ID drone detection -->
+46    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+46-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:28:5-79
+46-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:28:22-76
+47    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+47-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:29:5-81
+47-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:29:22-78
+48
+49    <!-- Internet permission for Nominatim geocoding API -->
+50    <uses-permission android:name="android.permission.INTERNET" />
+50-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:32:5-67
+50-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:32:22-64
+51
+52    <application
+52-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:34:5-68:19
+53        android:allowBackup="false"
+53-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:35:9-36
+54        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+54-->[androidx.core:core:1.3.2] C:\Users\matth\.gradle\caches\transforms-3\190c3da32d57ab355901ea7ea2912c2c\transformed\core-1.3.2\AndroidManifest.xml:24:18-86
+55        android:debuggable="true"
+56        android:description="@string/app_desc"
+56-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:38:9-47
+57        android:extractNativeLibs="true"
+57-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:39:9-41
+58        android:icon="@drawable/ic_launcher"
+58-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:36:9-45
+59        android:label="@string/app_name"
+59-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:37:9-41
+60        android:theme="@style/AppTheme" >
+60-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:40:9-40
+61        <meta-data
+62            android:name="plugin-api"
+62-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:41:20-45
+63            android:value="com.atakmap.app@5.2.0.CIV" />
+63-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:41:46-79
+64        <meta-data
+64-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:42:9-78
+65            android:name="app_desc"
+65-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:42:20-43
+66            android:value="@string/app_desc" />
+66-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:42:44-76
+67
+68        <!--
+69            This fictitious activity entry allow for ATAK 4.6.0.2 and newer to perform 
+70            plugin discovery  android devices.  If this is removed, the plugin will 
+71            not be able to be discovered or loaded.
+72        -->
+73        <activity
+73-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:48:8-56:19
+74            android:name="com.atakmap.app.component"
+74-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:48:18-58
+75            android:exported="true"
+75-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:49:12-35
+76            android:icon="@drawable/ic_launcher" >
+76-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:50:12-48
+77            <intent-filter
+77-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:52:12-55:28
+78                android:icon="@drawable/ic_launcher"
+78-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:53:27-63
+79                android:label="@string/app_name" >
+79-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:52:27-59
+80                <action android:name="com.atakmap.app.component" />
+80-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:54:15-66
+80-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:54:23-63
+81            </intent-filter>
+82        </activity>
+83
+84        <!--
+85            Permission request activity for Android 13+ 
+86            Must be exported=true since ATAK (different UID) launches this activity
+87        -->
+88        <activity
+88-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:60:8-62:74
+89            android:name="com.gotak.address.PluginPermissionActivity"
+89-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:60:18-75
+90            android:exported="true"
+90-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:61:12-35
+91            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+91-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:62:12-71
+92
+93        <!-- AIDL Service for plugin -->
+94        <service
+94-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:65:8-66:38
+95            android:name="com.gotak.address.service.AddressAidlService"
+95-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:65:17-76
+96            android:exported="true" />
+96-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:66:12-35
+97    </application>
+98
+99</manifest>

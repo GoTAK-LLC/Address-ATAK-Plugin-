@@ -1,6 +1,5 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Using: C:\Users\matth\AppData\Local\Android\Sdk\build-tools\35.0.0\aidl.exe -pC:\Users\matth\AppData\Local\Android\Sdk\platforms\android-34\framework.aidl -oC:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\generated\aidl_source_output_dir\civDebug\out -IC:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\aidl -IC:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\civ\aidl -IC:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build-types\debug\aidl -IC:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\civDebug\aidl -IC:\Users\matth\.gradle\caches\8.13\transforms\2e2e92604551e251ca248b6fee2e75ac\transformed\core-1.3.2\aidl -IC:\Users\matth\.gradle\caches\8.13\transforms\eaad224776ad6783ee76bef2fb91ad54\transformed\versionedparcelable-1.1.0\aidl -dC:\Users\matth\AppData\Local\Temp\aidl16727521112670875933.d C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\aidl\com\gotak\address\aidl\SimpleService.aidl
  */
 package com.gotak.address.aidl;
 public interface SimpleService extends android.os.IInterface
@@ -9,13 +8,15 @@ public interface SimpleService extends android.os.IInterface
   public static class Default implements com.gotak.address.aidl.SimpleService
   {
     /**
-     * Pass a logging mechanism over to the Service so that the logs can be written to the
-     * appropriate logger.
-     */
+         * Pass a logging mechanism over to the Service so that the logs can be written to the
+         * appropriate logger.
+         */
     @Override public void registerLogger(com.gotak.address.aidl.ILogger log) throws android.os.RemoteException
     {
     }
-    /** Adds two numbers and returns the result. */
+    /**
+         * Adds two numbers and returns the result.
+         */
     @Override public int add(int a, int b) throws android.os.RemoteException
     {
       return 0;
@@ -28,8 +29,8 @@ public interface SimpleService extends android.os.IInterface
   /** Local-side IPC implementation stub class. */
   public static abstract class Stub extends android.os.Binder implements com.gotak.address.aidl.SimpleService
   {
+    private static final java.lang.String DESCRIPTOR = "com.gotak.address.aidl.SimpleService";
     /** Construct the stub at attach it to the interface. */
-    @SuppressWarnings("this-escape")
     public Stub()
     {
       this.attachInterface(this, DESCRIPTOR);
@@ -56,25 +57,25 @@ public interface SimpleService extends android.os.IInterface
     @Override public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) throws android.os.RemoteException
     {
       java.lang.String descriptor = DESCRIPTOR;
-      if (code >= android.os.IBinder.FIRST_CALL_TRANSACTION && code <= android.os.IBinder.LAST_CALL_TRANSACTION) {
-        data.enforceInterface(descriptor);
-      }
-      if (code == INTERFACE_TRANSACTION) {
-        reply.writeString(descriptor);
-        return true;
-      }
       switch (code)
       {
+        case INTERFACE_TRANSACTION:
+        {
+          reply.writeString(descriptor);
+          return true;
+        }
         case TRANSACTION_registerLogger:
         {
+          data.enforceInterface(descriptor);
           com.gotak.address.aidl.ILogger _arg0;
           _arg0 = com.gotak.address.aidl.ILogger.Stub.asInterface(data.readStrongBinder());
           this.registerLogger(_arg0);
           reply.writeNoException();
-          break;
+          return true;
         }
         case TRANSACTION_add:
         {
+          data.enforceInterface(descriptor);
           int _arg0;
           _arg0 = data.readInt();
           int _arg1;
@@ -82,14 +83,13 @@ public interface SimpleService extends android.os.IInterface
           int _result = this.add(_arg0, _arg1);
           reply.writeNoException();
           reply.writeInt(_result);
-          break;
+          return true;
         }
         default:
         {
           return super.onTransact(code, data, reply, flags);
         }
       }
-      return true;
     }
     private static class Proxy implements com.gotak.address.aidl.SimpleService
     {
@@ -107,17 +107,21 @@ public interface SimpleService extends android.os.IInterface
         return DESCRIPTOR;
       }
       /**
-       * Pass a logging mechanism over to the Service so that the logs can be written to the
-       * appropriate logger.
-       */
+           * Pass a logging mechanism over to the Service so that the logs can be written to the
+           * appropriate logger.
+           */
       @Override public void registerLogger(com.gotak.address.aidl.ILogger log) throws android.os.RemoteException
       {
         android.os.Parcel _data = android.os.Parcel.obtain();
         android.os.Parcel _reply = android.os.Parcel.obtain();
         try {
           _data.writeInterfaceToken(DESCRIPTOR);
-          _data.writeStrongInterface(log);
+          _data.writeStrongBinder((((log!=null))?(log.asBinder()):(null)));
           boolean _status = mRemote.transact(Stub.TRANSACTION_registerLogger, _data, _reply, 0);
+          if (!_status && getDefaultImpl() != null) {
+            getDefaultImpl().registerLogger(log);
+            return;
+          }
           _reply.readException();
         }
         finally {
@@ -125,7 +129,9 @@ public interface SimpleService extends android.os.IInterface
           _data.recycle();
         }
       }
-      /** Adds two numbers and returns the result. */
+      /**
+           * Adds two numbers and returns the result.
+           */
       @Override public int add(int a, int b) throws android.os.RemoteException
       {
         android.os.Parcel _data = android.os.Parcel.obtain();
@@ -136,6 +142,9 @@ public interface SimpleService extends android.os.IInterface
           _data.writeInt(a);
           _data.writeInt(b);
           boolean _status = mRemote.transact(Stub.TRANSACTION_add, _data, _reply, 0);
+          if (!_status && getDefaultImpl() != null) {
+            return getDefaultImpl().add(a, b);
+          }
           _reply.readException();
           _result = _reply.readInt();
         }
@@ -145,17 +154,34 @@ public interface SimpleService extends android.os.IInterface
         }
         return _result;
       }
+      public static com.gotak.address.aidl.SimpleService sDefaultImpl;
     }
     static final int TRANSACTION_registerLogger = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
     static final int TRANSACTION_add = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
+    public static boolean setDefaultImpl(com.gotak.address.aidl.SimpleService impl) {
+      // Only one user of this interface can use this function
+      // at a time. This is a heuristic to detect if two different
+      // users in the same process use this function.
+      if (Stub.Proxy.sDefaultImpl != null) {
+        throw new IllegalStateException("setDefaultImpl() called twice");
+      }
+      if (impl != null) {
+        Stub.Proxy.sDefaultImpl = impl;
+        return true;
+      }
+      return false;
+    }
+    public static com.gotak.address.aidl.SimpleService getDefaultImpl() {
+      return Stub.Proxy.sDefaultImpl;
+    }
   }
-  /** @hide */
-  public static final java.lang.String DESCRIPTOR = "com.gotak.address.aidl.SimpleService";
   /**
-   * Pass a logging mechanism over to the Service so that the logs can be written to the
-   * appropriate logger.
-   */
+       * Pass a logging mechanism over to the Service so that the logs can be written to the
+       * appropriate logger.
+       */
   public void registerLogger(com.gotak.address.aidl.ILogger log) throws android.os.RemoteException;
-  /** Adds two numbers and returns the result. */
+  /**
+       * Adds two numbers and returns the result.
+       */
   public int add(int a, int b) throws android.os.RemoteException;
 }

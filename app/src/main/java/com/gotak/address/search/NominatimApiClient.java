@@ -7,6 +7,7 @@ import com.atakmap.coremap.log.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,16 +21,23 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * HTTP client for the Nominatim OpenStreetMap geocoding API.
- * https://nominatim.org/release-docs/develop/api/Search/
+ * HTTP client for geocoding APIs with fuzzy search support.
  * 
- * No API key required, but must follow usage policy:
- * - Proper User-Agent header
- * - Max 1 request per second (handled by debouncing in UI)
+ * Primary: Photon API (https://photon.komoot.io/) - Built on OSM data with typo tolerance
+ * Fallback: Nominatim API (https://nominatim.openstreetmap.org/) - Standard OSM geocoder
+ * 
+ * Photon provides fuzzy matching so "ontigol" will find "Ontigola", etc.
+ * No API key required for either service.
  */
 public class NominatimApiClient {
     private static final String TAG = "NominatimApiClient";
-    private static final String BASE_URL = "https://nominatim.openstreetmap.org/search";
+    
+    // Photon API - has built-in fuzzy/typo-tolerant search
+    private static final String PHOTON_URL = "https://photon.komoot.io/api/";
+    
+    // Nominatim API - fallback if Photon fails
+    private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
+    
     private static final String USER_AGENT = "ATAK-AddressPlugin/1.0";
     private static final int CONNECT_TIMEOUT = 10000; // 10 seconds
     private static final int READ_TIMEOUT = 15000; // 15 seconds
@@ -52,32 +60,46 @@ public class NominatimApiClient {
     }
 
     /**
-     * Search for places matching the query.
+     * Search for places matching the query with fuzzy matching.
      * Runs on a background thread and returns results via callback on the main thread.
      */
     public void search(String query, SearchCallback callback) {
         executor.execute(() -> {
             try {
-                List<NominatimSearchResult> results = performSearch(query);
-                mainHandler.post(() -> callback.onSuccess(results));
+                // Try Photon first (better fuzzy matching)
+                List<NominatimSearchResult> results = performPhotonSearch(query);
+                
+                // If Photon returns no results, try Nominatim as fallback
+                if (results.isEmpty()) {
+                    Log.d(TAG, "Photon returned no results, trying Nominatim fallback");
+                    results = performNominatimSearch(query);
+                }
+                
+                final List<NominatimSearchResult> finalResults = results;
+                mainHandler.post(() -> callback.onSuccess(finalResults));
             } catch (Exception e) {
                 Log.e(TAG, "Search error: " + e.getMessage(), e);
-                mainHandler.post(() -> callback.onError(e.getMessage()));
+                // Try Nominatim as fallback on any error
+                try {
+                    List<NominatimSearchResult> results = performNominatimSearch(query);
+                    final List<NominatimSearchResult> finalResults = results;
+                    mainHandler.post(() -> callback.onSuccess(finalResults));
+                } catch (Exception e2) {
+                    Log.e(TAG, "Fallback search also failed: " + e2.getMessage(), e2);
+                    mainHandler.post(() -> callback.onError(e.getMessage()));
+                }
             }
         });
     }
 
     /**
-     * Perform synchronous search (must be called from background thread).
+     * Perform Photon API search - has built-in fuzzy/typo-tolerant matching.
      */
-    private List<NominatimSearchResult> performSearch(String query) throws IOException, JSONException {
+    private List<NominatimSearchResult> performPhotonSearch(String query) throws IOException, JSONException {
         String encodedQuery = URLEncoder.encode(query, "UTF-8");
-        String urlString = BASE_URL + "?q=" + encodedQuery 
-                + "&format=json"
-                + "&addressdetails=1"
-                + "&limit=" + DEFAULT_LIMIT;
+        String urlString = PHOTON_URL + "?q=" + encodedQuery + "&limit=" + DEFAULT_LIMIT;
 
-        Log.d(TAG, "Searching: " + urlString);
+        Log.d(TAG, "Photon search: " + urlString);
 
         HttpURLConnection connection = null;
         try {
@@ -90,10 +112,157 @@ public class NominatimApiClient {
             connection.setReadTimeout(READ_TIMEOUT);
 
             int responseCode = connection.getResponseCode();
-            Log.d(TAG, "Response code: " + responseCode);
+            Log.d(TAG, "Photon response code: " + responseCode);
 
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                throw new IOException("HTTP error: " + responseCode);
+                throw new IOException("Photon HTTP error: " + responseCode);
+            }
+
+            // Read response
+            StringBuilder response = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+            }
+
+            // Parse GeoJSON response from Photon
+            JSONObject jsonResponse = new JSONObject(response.toString());
+            JSONArray features = jsonResponse.getJSONArray("features");
+            List<NominatimSearchResult> results = new ArrayList<>();
+            
+            for (int i = 0; i < features.length(); i++) {
+                NominatimSearchResult result = parsePhotonFeature(features.getJSONObject(i));
+                if (result != null) {
+                    results.add(result);
+                }
+            }
+
+            Log.i(TAG, "Photon found " + results.size() + " results for: " + query);
+            return results;
+
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
+
+    /**
+     * Parse a Photon GeoJSON feature into our result format.
+     */
+    private NominatimSearchResult parsePhotonFeature(JSONObject feature) {
+        try {
+            JSONObject geometry = feature.getJSONObject("geometry");
+            JSONArray coordinates = geometry.getJSONArray("coordinates");
+            double longitude = coordinates.getDouble(0);
+            double latitude = coordinates.getDouble(1);
+
+            JSONObject properties = feature.getJSONObject("properties");
+            
+            long osmId = properties.optLong("osm_id", 0);
+            String osmType = properties.optString("osm_type", null);
+            String name = properties.optString("name", null);
+            String type = properties.optString("type", null);
+            
+            // Build display name from address components
+            String displayName = buildDisplayName(properties);
+            
+            // Use OSM ID as place ID (Photon doesn't have separate place_id)
+            long placeId = osmId;
+
+            return new NominatimSearchResult(placeId, latitude, longitude,
+                    displayName, name, type, osmType, osmId);
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parsing Photon feature", e);
+            return null;
+        }
+    }
+
+    /**
+     * Build a readable display name from Photon address properties.
+     */
+    private String buildDisplayName(JSONObject properties) {
+        StringBuilder sb = new StringBuilder();
+        
+        String name = properties.optString("name", null);
+        String street = properties.optString("street", null);
+        String housenumber = properties.optString("housenumber", null);
+        String city = properties.optString("city", null);
+        String state = properties.optString("state", null);
+        String country = properties.optString("country", null);
+        String postcode = properties.optString("postcode", null);
+        
+        // Add name first if available
+        if (name != null && !name.isEmpty()) {
+            sb.append(name);
+        }
+        
+        // Add street address
+        if (street != null && !street.isEmpty()) {
+            if (sb.length() > 0) sb.append(", ");
+            if (housenumber != null && !housenumber.isEmpty()) {
+                sb.append(housenumber).append(" ");
+            }
+            sb.append(street);
+        }
+        
+        // Add city
+        if (city != null && !city.isEmpty()) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(city);
+        }
+        
+        // Add state
+        if (state != null && !state.isEmpty()) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(state);
+        }
+        
+        // Add postcode
+        if (postcode != null && !postcode.isEmpty()) {
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(postcode);
+        }
+        
+        // Add country
+        if (country != null && !country.isEmpty()) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(country);
+        }
+        
+        return sb.length() > 0 ? sb.toString() : "Unknown location";
+    }
+
+    /**
+     * Perform Nominatim search as fallback (less fuzzy but more comprehensive).
+     */
+    private List<NominatimSearchResult> performNominatimSearch(String query) throws IOException, JSONException {
+        String encodedQuery = URLEncoder.encode(query, "UTF-8");
+        String urlString = NOMINATIM_URL + "?q=" + encodedQuery 
+                + "&format=json"
+                + "&addressdetails=1"
+                + "&limit=" + DEFAULT_LIMIT;
+
+        Log.d(TAG, "Nominatim search: " + urlString);
+
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL(urlString);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("User-Agent", USER_AGENT);
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setConnectTimeout(CONNECT_TIMEOUT);
+            connection.setReadTimeout(READ_TIMEOUT);
+
+            int responseCode = connection.getResponseCode();
+            Log.d(TAG, "Nominatim response code: " + responseCode);
+
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                throw new IOException("Nominatim HTTP error: " + responseCode);
             }
 
             // Read response
@@ -116,7 +285,7 @@ public class NominatimApiClient {
                 results.add(result);
             }
 
-            Log.i(TAG, "Found " + results.size() + " results for: " + query);
+            Log.i(TAG, "Nominatim found " + results.size() + " results for: " + query);
             return results;
 
         } finally {

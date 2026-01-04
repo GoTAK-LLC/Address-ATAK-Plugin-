@@ -1,9 +1,9 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Using: C:\Users\matth\AppData\Local\Android\Sdk\build-tools\35.0.0\aidl.exe -pC:\Users\matth\AppData\Local\Android\Sdk\platforms\android-34\framework.aidl -oC:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\generated\aidl_source_output_dir\civDebug\out -IC:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\aidl -IC:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\civ\aidl -IC:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build-types\debug\aidl -IC:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\civDebug\aidl -IC:\Users\matth\.gradle\caches\8.13\transforms\2e2e92604551e251ca248b6fee2e75ac\transformed\core-1.3.2\aidl -IC:\Users\matth\.gradle\caches\8.13\transforms\eaad224776ad6783ee76bef2fb91ad54\transformed\versionedparcelable-1.1.0\aidl -dC:\Users\matth\AppData\Local\Temp\aidl8111753505376978517.d C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\aidl\com\gotak\address\aidl\ILogger.aidl
  */
 package com.gotak.address.aidl;
 // Declare any non-default types here with import statements
+
 public interface ILogger extends android.os.IInterface
 {
   /** Default implementation for ILogger. */
@@ -23,8 +23,8 @@ public interface ILogger extends android.os.IInterface
   /** Local-side IPC implementation stub class. */
   public static abstract class Stub extends android.os.Binder implements com.gotak.address.aidl.ILogger
   {
+    private static final java.lang.String DESCRIPTOR = "com.gotak.address.aidl.ILogger";
     /** Construct the stub at attach it to the interface. */
-    @SuppressWarnings("this-escape")
     public Stub()
     {
       this.attachInterface(this, DESCRIPTOR);
@@ -51,17 +51,16 @@ public interface ILogger extends android.os.IInterface
     @Override public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) throws android.os.RemoteException
     {
       java.lang.String descriptor = DESCRIPTOR;
-      if (code >= android.os.IBinder.FIRST_CALL_TRANSACTION && code <= android.os.IBinder.LAST_CALL_TRANSACTION) {
-        data.enforceInterface(descriptor);
-      }
-      if (code == INTERFACE_TRANSACTION) {
-        reply.writeString(descriptor);
-        return true;
-      }
       switch (code)
       {
+        case INTERFACE_TRANSACTION:
+        {
+          reply.writeString(descriptor);
+          return true;
+        }
         case TRANSACTION_e:
         {
+          data.enforceInterface(descriptor);
           java.lang.String _arg0;
           _arg0 = data.readString();
           java.lang.String _arg1;
@@ -70,10 +69,11 @@ public interface ILogger extends android.os.IInterface
           _arg2 = data.readString();
           this.e(_arg0, _arg1, _arg2);
           reply.writeNoException();
-          break;
+          return true;
         }
         case TRANSACTION_d:
         {
+          data.enforceInterface(descriptor);
           java.lang.String _arg0;
           _arg0 = data.readString();
           java.lang.String _arg1;
@@ -82,14 +82,13 @@ public interface ILogger extends android.os.IInterface
           _arg2 = data.readString();
           this.d(_arg0, _arg1, _arg2);
           reply.writeNoException();
-          break;
+          return true;
         }
         default:
         {
           return super.onTransact(code, data, reply, flags);
         }
       }
-      return true;
     }
     private static class Proxy implements com.gotak.address.aidl.ILogger
     {
@@ -116,6 +115,10 @@ public interface ILogger extends android.os.IInterface
           _data.writeString(msg);
           _data.writeString(exception);
           boolean _status = mRemote.transact(Stub.TRANSACTION_e, _data, _reply, 0);
+          if (!_status && getDefaultImpl() != null) {
+            getDefaultImpl().e(tag, msg, exception);
+            return;
+          }
           _reply.readException();
         }
         finally {
@@ -133,6 +136,10 @@ public interface ILogger extends android.os.IInterface
           _data.writeString(msg);
           _data.writeString(exception);
           boolean _status = mRemote.transact(Stub.TRANSACTION_d, _data, _reply, 0);
+          if (!_status && getDefaultImpl() != null) {
+            getDefaultImpl().d(tag, msg, exception);
+            return;
+          }
           _reply.readException();
         }
         finally {
@@ -140,12 +147,27 @@ public interface ILogger extends android.os.IInterface
           _data.recycle();
         }
       }
+      public static com.gotak.address.aidl.ILogger sDefaultImpl;
     }
     static final int TRANSACTION_e = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
     static final int TRANSACTION_d = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
+    public static boolean setDefaultImpl(com.gotak.address.aidl.ILogger impl) {
+      // Only one user of this interface can use this function
+      // at a time. This is a heuristic to detect if two different
+      // users in the same process use this function.
+      if (Stub.Proxy.sDefaultImpl != null) {
+        throw new IllegalStateException("setDefaultImpl() called twice");
+      }
+      if (impl != null) {
+        Stub.Proxy.sDefaultImpl = impl;
+        return true;
+      }
+      return false;
+    }
+    public static com.gotak.address.aidl.ILogger getDefaultImpl() {
+      return Stub.Proxy.sDefaultImpl;
+    }
   }
-  /** @hide */
-  public static final java.lang.String DESCRIPTOR = "com.gotak.address.aidl.ILogger";
   public void e(java.lang.String tag, java.lang.String msg, java.lang.String exception) throws android.os.RemoteException;
   public void d(java.lang.String tag, java.lang.String msg, java.lang.String exception) throws android.os.RemoteException;
 }

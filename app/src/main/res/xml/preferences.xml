@@ -1,91 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Local Geocoding Settings -->
     <PreferenceCategory
-        android:key="key_for_category"
-        android:title="Test Preference Category (in Plugins they cannot have any members)" />
+        android:key="category_local_geocoding"
+        android:title="Local Geocoding" />
 
+    <com.atakmap.android.gui.PanCheckBoxPreference
+        android:key="address_show_self_location"
+        android:title="Show My Address"
+        android:summary="Display your current address on the map above your callsign"
+        android:defaultValue="true" />
 
     <com.atakmap.android.gui.PanEditTextPreference
-        pluginIcon="@drawable/abc"
-        android:defaultValue="0"
-        android:dialogTitle="Enter the time in jiffies"
+        android:key="address_refresh_period"
+        android:title="Refresh Period (seconds)"
+        android:summary="How often to update your address when moving"
+        android:defaultValue="5"
         android:inputType="number"
-        android:key="key_for_address"
-        android:numeric="integer"
-        android:summary="Not sure what to say about it but if you want to use a summary defined in the strings.xml file you will needs to use the syntax @+string/ with the string identifier.   See the example bellow.   This unique syntax keeps issues from occuring where the string resource is looked up in the core application."
-        android:title="Some Textual Preference" />
+        android:dialogTitle="Refresh Period"
+        android:dependency="address_show_self_location" />
 
-    <com.atakmap.android.gui.PanPreference
-        android:key="test_file_browser"
-        android:summary="@string/summary"
-        android:title="Test File Browser" />
-
-
-    <com.atakmap.android.gui.PanPreference
-        android:key="test2"
-        android:summary="@string/full_example_summary"
-        android:title="@string/full_example_title" />
-
-
-    <com.atakmap.android.gui.PanPreference
-        android:key="nested_pref"
-        android:summary="Open a nested preference fragment."
-        android:title="Sub Preferences" />
+    <!-- Search Settings -->
+    <PreferenceCategory
+        android:key="category_search"
+        android:title="Address Search" />
 
     <com.atakmap.android.gui.PanCheckBoxPreference
-        android:key="test3"
-        android:summary="Shows a quick check box example"
-        android:title="Example Check Box"
-        android:defaultValue="true"
-        />
+        android:key="address_save_history"
+        android:title="Save Search History"
+        android:summary="Remember recently searched locations"
+        android:defaultValue="true" />
 
-    <com.atakmap.android.gui.PanListPreference
-        android:key="test4"
-        android:summary="Shows a quick list selection example"
-        android:title="Example list selector"
-        android:defaultValue="Italy"
-        android:entries="@array/country_arrays"
-        android:entryValues="@array/country_arrays"
-        />
+    <com.atakmap.android.gui.PanPreference
+        android:key="address_clear_history"
+        android:title="Clear Search History"
+        android:summary="Remove all saved search history" />
 
-
+    <!-- About -->
     <PreferenceCategory
-        android:key="key_for_category2"
-        android:title="Test Preference Category 2 (in Plugins they cannot have any members)" />
+        android:key="category_about"
+        android:title="About" />
 
-    <com.atakmap.android.gui.PanCheckBoxPreference
-        android:key="test5"
-        android:summary="Shows a quick check box example that shows or hides other preferences"
-        android:title="Example Check Box 2"
-        android:defaultValue="false"
-        />
-
-    <com.atakmap.android.gui.PanEditTextPreference
-        android:defaultValue=""
-        android:dependency="test5"
-        android:dialogTitle="Dependent Edit Text"
-        android:inputType="textNoSuggestions|textUri"
-        android:key="network_static_ip_address"
-        android:summary="This preference is dependent on the Example Check Box 2"
-        android:title="Dependent Edit Text" />
-
-
-    <com.atakmap.android.network.ui.CredentialsPreference 
-        android:title="Sample Credentials"
-        credentialsType="addressCredentials"
-        android:key="address.credentials"
-        android:summary="A sample preference for how to save credentials.   See AddressMapComponent onCreate for how to access"/>
-
-    <PreferenceCategory
-        android:title="@string/documentation"/>
-            
-            
     <Preference
-        android:title="@string/plugin_documentation"
-        android:summary="@string/plugin_documentation_summary"
-        android:key="userguide"/>
-
+        android:key="address_about"
+        android:title="Address Plugin"
+        android:summary="Nominatim/Photon geocoding with fuzzy search" />
 
 </PreferenceScreen>
 

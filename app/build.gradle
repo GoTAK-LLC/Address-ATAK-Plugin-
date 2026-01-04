@@ -109,7 +109,6 @@ def supportedFlavors =
 ]
 
 android {
-    namespace 'com.gotak.address.plugin'
     compileSdkVersion 34
     buildToolsVersion "30.0.3"
 
@@ -133,10 +132,6 @@ android {
         jniLibs {
             useLegacyPackaging = true
         }
-    }
-
-    buildFeatures {
-        buildConfig = true
     }
 
     lintOptions {

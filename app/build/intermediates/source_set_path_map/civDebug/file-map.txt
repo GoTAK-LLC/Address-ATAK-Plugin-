@@ -1,0 +1,13 @@
+com.gotak.address.plugin.app-core-1.3.2-0 C:\Users\matth\.gradle\caches\transforms-3\190c3da32d57ab355901ea7ea2912c2c\transformed\core-1.3.2\res
+com.gotak.address.plugin.app-cardview-1.0.0-1 C:\Users\matth\.gradle\caches\transforms-3\1de04a675efb66b8f92158eed1a2fc6a\transformed\cardview-1.0.0\res
+com.gotak.address.plugin.app-recyclerview-1.2.1-2 C:\Users\matth\.gradle\caches\transforms-3\65e6df9c7e971430eaf3030db12b9fce\transformed\recyclerview-1.2.1\res
+com.gotak.address.plugin.app-debug-3 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build-types\debug\res
+com.gotak.address.plugin.app-civ-4 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\generated\res\pngs\civ\debug
+com.gotak.address.plugin.app-civ-5 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\generated\res\resValues\civ\debug
+com.gotak.address.plugin.app-civ-6 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\generated\res\rs\civ\debug
+com.gotak.address.plugin.app-mergeCivDebugResources-7 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\intermediates\incremental\civDebug\mergeCivDebugResources\merged.dir
+com.gotak.address.plugin.app-mergeCivDebugResources-8 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\intermediates\incremental\civDebug\mergeCivDebugResources\stripped.dir
+com.gotak.address.plugin.app-merged_res-9 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\intermediates\merged_res\civDebug
+com.gotak.address.plugin.app-civ-10 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\civ\res
+com.gotak.address.plugin.app-civDebug-11 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\civDebug\res
+com.gotak.address.plugin.app-main-12 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\res

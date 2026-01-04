@@ -33,6 +33,7 @@
 
     <application 
         android:allowBackup="false"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:description="@string/app_desc"
         android:extractNativeLibs="true"
@@ -46,8 +47,10 @@
             not be able to be discovered or loaded.  -->
        <activity android:name="com.atakmap.app.component"
            android:exported="true"
+           android:icon="@drawable/ic_launcher"
            tools:ignore="MissingClass">
-           <intent-filter android:label="@string/app_name">
+           <intent-filter android:label="@string/app_name"
+                          android:icon="@drawable/ic_launcher">
               <action android:name="com.atakmap.app.component" />
            </intent-filter>
        </activity>

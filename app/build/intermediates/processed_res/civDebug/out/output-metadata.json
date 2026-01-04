@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "PROCESSED_RES",
+    "kind": "Directory"
+  },
+  "applicationId": "com.gotak.address.plugin",
+  "variantName": "civDebug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 1767509386,
+      "versionName": "1.0.1 (cd745518) - [5.2.0]",
+      "outputFile": "resources-civDebug.ap_"
+    }
+  ],
+  "elementType": "File"
+}
