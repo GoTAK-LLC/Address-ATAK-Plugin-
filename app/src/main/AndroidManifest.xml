@@ -61,10 +61,6 @@
            android:exported="true"
            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-       <!-- AIDL Service for plugin -->
-       <service android:name="com.gotak.address.service.AddressAidlService"
-           android:exported="true" />
-
     </application>
 
 </manifest>

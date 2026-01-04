@@ -1,8 +1,8 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 3    package="com.gotak.address.plugin"
-4    android:versionCode="1767509386"
-5    android:versionName="1.0.1 (cd745518) - [5.2.0]" >
+4    android:versionCode="1767516483"
+5    android:versionName="1.0.1 (5df569a4) - [5.2.0]" >
 6
 7    <uses-sdk
 8        android:minSdkVersion="21"
@@ -86,7 +86,7 @@
 50-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:32:22-64
 51
 52    <application
-52-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:34:5-68:19
+52-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:34:5-64:19
 53        android:allowBackup="false"
 53-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:35:9-36
 54        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -151,14 +151,6 @@
 90-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:61:12-35
 91            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 91-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:62:12-71
-92
-93        <!-- AIDL Service for plugin -->
-94        <service
-94-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:65:8-66:38
-95            android:name="com.gotak.address.service.AddressAidlService"
-95-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:65:17-76
-96            android:exported="true" />
-96-->C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\AndroidManifest.xml:66:12-35
-97    </application>
-98
-99</manifest>
+92    </application>
+93
+94</manifest>

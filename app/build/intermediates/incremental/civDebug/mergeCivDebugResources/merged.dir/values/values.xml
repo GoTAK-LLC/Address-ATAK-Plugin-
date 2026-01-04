@@ -540,7 +540,7 @@
     <string name="tap_to_speak_mgrs_loc">Tap to state the Coordinates and Marker Type</string>
     <string name="toolbar_buttons">ToolbarButtons</string>
     <string name="toolbar_handled">Toolbar title and button styling is handled by the NavigationStackView</string>
-    <string name="versionName" translatable="false">1.0.1 (cd745518) - [5.2.0]</string>
+    <string name="versionName" translatable="false">1.0.1 (5df569a4) - [5.2.0]</string>
     <string name="videoLauncher">Example of how to display a video with an overlay layer</string>
     <string name="webView">Demonstrate how to launch a plugin with a web view.</string>
     <style name="ATAKEditText" parent="@android:style/Widget.EditText">

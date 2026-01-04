@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gotak.address.plugin"
-    android:versionCode="1767509386"
-    android:versionName="1.0.1 (cd745518) - [5.2.0]" >
+    android:versionCode="1767516483"
+    android:versionName="1.0.1 (5df569a4) - [5.2.0]" >
 
     <uses-sdk
         android:minSdkVersion="21"
@@ -89,11 +89,6 @@
             android:name="com.gotak.address.PluginPermissionActivity"
             android:exported="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-        <!-- AIDL Service for plugin -->
-        <service
-            android:name="com.gotak.address.service.AddressAidlService"
-            android:exported="true" />
     </application>
 
 </manifest>
