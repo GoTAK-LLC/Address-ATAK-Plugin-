@@ -16,6 +16,7 @@ import com.atakmap.android.widgets.LinearLayoutWidget;
 import com.atakmap.android.widgets.MapWidget;
 import com.atakmap.android.widgets.RootLayoutWidget;
 import com.atakmap.android.widgets.TextWidget;
+import com.atakmap.app.SettingsActivity;
 import com.atakmap.coremap.log.Log;
 import com.atakmap.coremap.maps.coords.GeoPoint;
 
@@ -56,6 +57,7 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
     
     // Colors (ARGB format)
     private static final int COLOR_CYAN = 0xFF00FFFF;
+    private static final int COLOR_RED = 0xFFFF4444;
     
     // Minimum distance (in meters) before re-geocoding
     // 50 feet = 15.24 meters - only geocode when user moves significantly
@@ -80,12 +82,17 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
     private String lastDisplayedText = "";
     private int lastDisplayedColor = 0;
     
+    // Double-tap detection
+    private static final long DOUBLE_TAP_TIMEOUT = 300; // milliseconds
+    private long lastClickTime = 0;
+    
     @Override
     protected void onCreateWidgets(Context context, android.content.Intent intent, MapView mapView) {
         Log.d(TAG, "onCreateWidgets");
         this.mapView = mapView;
         this.pluginContext = context;
-        this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        // Use ATAK's context for SharedPreferences to match settings UI
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(MapView.getMapView().getContext());
         this.mainHandler = new Handler(Looper.getMainLooper());
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
         this.photonGeocoder = new ReverseGeocoder();
@@ -96,10 +103,10 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
         // Load cached address from previous session
         loadCachedAddress();
         
-        // Create widget in bottom right corner, directly above the callsign
+        // Create widget in bottom right corner, between server widget and callsign
         RootLayoutWidget root = (RootLayoutWidget) mapView.getComponentExtra("rootLayoutWidget");
         if (root != null) {
-            // Get the BOTTOM_RIGHT layout directly (where callsign lives)
+            // Get the BOTTOM_RIGHT layout directly
             layout = root.getLayout(RootLayoutWidget.BOTTOM_RIGHT);
             
             addressWidget = new TextWidget("", FONT_SIZE);
@@ -109,10 +116,25 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
             addressWidget.addOnClickListener(this);
             addressWidget.setVisible(false);
             
-            // Add at the end of the layout (just above where callsign appears)
-            // Using a high index ensures it's near the bottom of the stack
+            // Find the SelfLocTray (callsign) and insert at its position (pushing it down)
+            int insertIndex = 2; // Default position
             int childCount = layout.getChildCount();
-            layout.addChildWidgetAt(Math.max(0, childCount), addressWidget);
+            for (int i = 0; i < childCount; i++) {
+                MapWidget child = (MapWidget) layout.getChildWidgetAt(i);
+                if (child != null) {
+                    String name = child.getName();
+                    Log.d(TAG, "Child " + i + ": " + name);
+                    // Find the callsign tray and insert at its position
+                    if (name != null && name.contains("SelfLocTray")) {
+                        insertIndex = i; // Insert at the callsign tray's position (pushes it down)
+                        Log.d(TAG, "Found callsign tray at index " + i + ", inserting at same index");
+                        break;
+                    }
+                }
+            }
+            
+            Log.d(TAG, "Inserting widget at index " + insertIndex + " (total children: " + childCount + ")");
+            layout.addChildWidgetAt(insertIndex, addressWidget);
         }
         
         // Start geocoding if enabled
@@ -149,20 +171,53 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
     
     @Override
     public void onMapWidgetClick(MapWidget widget, MotionEvent event) {
-        Log.d(TAG, "Widget clicked - refreshing geocoding");
-        // Force refresh on click - reset location cache but keep display stable
-        lastGeocodedPoint = null;
-        performGeocoding();
+        long currentTime = System.currentTimeMillis();
+        
+        if (currentTime - lastClickTime < DOUBLE_TAP_TIMEOUT) {
+            // Double-tap detected - open settings
+            Log.d(TAG, "Double-tap detected - opening settings");
+            openPluginSettings();
+            lastClickTime = 0; // Reset to prevent triple-tap
+        } else {
+            // Single tap - refresh geocoding
+            Log.d(TAG, "Single tap - refreshing geocoding");
+            lastGeocodedPoint = null;
+            performGeocoding();
+        }
+        
+        lastClickTime = currentTime;
+    }
+    
+    /**
+     * Open the Address plugin settings in ATAK's preferences.
+     */
+    private void openPluginSettings() {
+        try {
+            SettingsActivity.start("addressPreferences", "addressPreferences");
+            Log.d(TAG, "Opened Address plugin settings");
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to open settings: " + e.getMessage(), e);
+        }
     }
     
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(TAG, "Preference changed: " + key);
         if (PREF_SHOW_SELF_ADDRESS.equals(key)) {
-            if (isGeocodingEnabled()) {
+            boolean enabled = isGeocodingEnabled();
+            Log.d(TAG, "Show My Address toggled: " + enabled);
+            if (enabled) {
+                // Toggled ON - load cached address, start geocoding, and force an immediate geocode
+                loadCachedAddress();
                 startGeocoding();
+                // Force immediate geocode to get fresh address
+                lastGeocodedPoint = null;
+                performGeocoding();
             } else {
+                // Toggled OFF - stop geocoding and hide widget immediately
                 stopGeocoding();
                 updateWidgetVisibility(false);
+                Log.d(TAG, "Widget hidden");
             }
         } else if (PREF_REFRESH_PERIOD.equals(key)) {
             // Restart with new period
@@ -256,7 +311,10 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
                 return; // Photon is async, will update widget when done
             } else {
                 Log.d(TAG, "ATAK geocoder failed, Photon fallback disabled for privacy");
-                // Keep showing last known address
+                // Show "No Address" in red if we don't have a cached address
+                if (currentAddress == null || currentAddress.isEmpty()) {
+                    updateWidget("No Address", COLOR_RED);
+                }
                 return;
             }
         }
@@ -333,7 +391,10 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
             @Override
             public void onError(String errorMessage) {
                 Log.w(TAG, "Photon geocoding failed: " + errorMessage);
-                // Both geocoders failed - keep showing last known address
+                // Both geocoders failed - show "No Address" in red if no cached address
+                if (currentAddress == null || currentAddress.isEmpty()) {
+                    updateWidget("No Address", COLOR_RED);
+                }
             }
         });
     }
@@ -441,6 +502,12 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
      * Shows the last known address immediately while waiting for fresh geocoding.
      */
     private void loadCachedAddress() {
+        // Don't load or show cached address if feature is disabled
+        if (!isGeocodingEnabled()) {
+            Log.d(TAG, "Geocoding disabled, not loading cached address");
+            return;
+        }
+        
         String cachedAddress = prefs.getString(CACHE_LAST_ADDRESS, null);
         float cachedLat = prefs.getFloat(CACHE_LAST_LAT, 0f);
         float cachedLon = prefs.getFloat(CACHE_LAST_LON, 0f);
