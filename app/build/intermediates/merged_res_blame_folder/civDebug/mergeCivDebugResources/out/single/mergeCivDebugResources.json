@@ -1,0 +1,194 @@
+[
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_abc.png.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/abc.png"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_ic_location_map.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/ic_location_map.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_ic_search.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/ic_search.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_navigation_stack_dropdown_child.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/navigation_stack_dropdown_child.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_ic_navigate.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/ic_navigate.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/xml_preferences.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/xml/preferences.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_overlay_footer.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/overlay_footer.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_marker_callsign_tile.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/marker_callsign_tile.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_view_overlay_example.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/view_overlay_example.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_ic_location_city.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/ic_location_city.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_ic_location_world.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/ic_location_world.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_bg_result_item.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/bg_result_item.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_ic_location_pin.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/ic_location_pin.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_radio_item_generic.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/radio_item_generic.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_dot_selected.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/dot_selected.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_speech_to_text.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/speech_to_text.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_new_dark_button_bg.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/new_dark_button_bg.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_hello_world_layout.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/hello_world_layout.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_ic_clear.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/ic_clear.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_btn_gray.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/btn_gray.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_svg_example.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/svg_example.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_new_dark_button_disabled.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/new_dark_button_disabled.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_ic_launcher_badge.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/ic_launcher_badge.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_tab_swipe_view.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/tab_swipe_view.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable-xhdpi_rv_grid.png.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable-xhdpi/rv_grid.png"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable-mdpi_radio_icon.png.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable-mdpi/radio_icon.png"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable-xhdpi_ic_route.png.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable-xhdpi/ic_route.png"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_overlay_header.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/overlay_header.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable-mdpi_node_icon.png.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable-mdpi/node_icon.png"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable-xhdpi_rv_vertical.png.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable-xhdpi/rv_vertical.png"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable-mdpi_arrowright.png.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable-mdpi/arrowright.png"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_specialdetail.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/specialdetail.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/xml_com_android_vending_archive_opt_out.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/xml/com_android_vending_archive_opt_out.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_address_history_item.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/address_history_item.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_marker_callsign_row.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/marker_callsign_row.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_new_dark_button_selected.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/new_dark_button_selected.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_dot_selector.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/dot_selector.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_blank_linearlayout.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/blank_linearlayout.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/xml_subpreferences.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/xml/subpreferences.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_dot_unselected.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/dot_unselected.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_fragment_foo.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/fragment_foo.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_recycler_view.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/recycler_view.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_navigation_stack.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/navigation_stack.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_address_search_panel.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/address_search_panel.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_bg_search_input.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/bg_search_input.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable_ic_launcher.png.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable/ic_launcher.png"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/layout_address_search_result_item.xml.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/layout/address_search_result_item.xml"
+    },
+    {
+        "merged": "com.gotak.address.plugin.app-civDebug-8:/drawable-xhdpi_rv_horizontal.png.flat",
+        "source": "com.gotak.address.plugin.app-main-11:/drawable-xhdpi/rv_horizontal.png"
+    }
+]

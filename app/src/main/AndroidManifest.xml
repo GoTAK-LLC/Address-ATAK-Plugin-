@@ -1,0 +1,67 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.gotak.address.plugin"
+    tools:ignore="GoogleAppIndexingWarning">
+
+    <!-- USB Host feature for RIDAR device communication -->
+    <uses-feature android:name="android.hardware.usb.host" android:required="false" />
+    
+    <!-- Bluetooth permissions for wireless RIDAR connection and EUD BLE scanning -->
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <!-- Android 12+ Bluetooth permissions - need location for Remote ID drone detection -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" tools:targetApi="s" />
+    
+    <!-- WiFi permissions for EUD Remote ID WiFi Beacon scanning -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- Android 13+ WiFi Nearby permission - need location for Remote ID scanning -->
+    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" tools:targetApi="tiramisu" />
+    
+    <!-- WiFi Aware (NaN) for EUD Remote ID scanning - optional feature -->
+    <uses-feature android:name="android.hardware.wifi.aware" android:required="false" />
+    
+    <!-- Location permissions required for Remote ID drone detection -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
+    <!-- Internet permission for Nominatim geocoding API -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application 
+        android:allowBackup="false"
+        android:label="@string/app_name"
+        android:description="@string/app_desc"
+        android:extractNativeLibs="true"
+        android:theme="@style/AppTheme" >
+        <meta-data android:name="plugin-api" android:value="${atakApiVersion}"/>
+        <meta-data android:name="app_desc" android:value="@string/app_desc"/>
+
+
+       <!-- This fictitious activity entry allow for ATAK 4.6.0.2 and newer to perform 
+            plugin discovery  android devices.  If this is removed, the plugin will 
+            not be able to be discovered or loaded.  -->
+       <activity android:name="com.atakmap.app.component"
+           android:exported="true"
+           tools:ignore="MissingClass">
+           <intent-filter android:label="@string/app_name">
+              <action android:name="com.atakmap.app.component" />
+           </intent-filter>
+       </activity>
+
+       <!-- Permission request activity for Android 13+ 
+            Must be exported=true since ATAK (different UID) launches this activity -->
+       <activity android:name="com.gotak.address.PluginPermissionActivity"
+           android:exported="true"
+           android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+       <!-- AIDL Service for plugin -->
+       <service android:name="com.gotak.address.service.AddressAidlService"
+           android:exported="true" />
+
+    </application>
+
+</manifest>

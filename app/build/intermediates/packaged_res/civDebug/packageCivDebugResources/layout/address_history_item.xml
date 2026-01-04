@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="4dp"
+    android:paddingEnd="0dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_result_item">
+
+    <!-- Clickable area for navigating -->
+    <LinearLayout
+        android:id="@+id/history_item_clickable"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/history_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_location_pin"
+            android:contentDescription="@string/location_icon_desc"
+            android:layout_marginEnd="12dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/history_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="Eiffel Tower" />
+
+            <TextView
+                android:id="@+id/history_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#AAAAAA"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="Champ de Mars, Paris, France" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Navigate in Google Maps button -->
+    <ImageButton
+        android:id="@+id/history_navigate"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_navigate"
+        android:contentDescription="@string/navigate_button_desc"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:padding="6dp" />
+
+    <!-- Remove button -->
+    <ImageButton
+        android:id="@+id/history_remove"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_clear"
+        android:contentDescription="@string/remove_history_item_desc"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:padding="8dp" />
+
+</LinearLayout>
+

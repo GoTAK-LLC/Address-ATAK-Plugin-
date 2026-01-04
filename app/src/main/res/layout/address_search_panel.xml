@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="#1E1E1E">
+
+    <!-- Search Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_search_input"
+        android:paddingStart="12dp"
+        android:paddingEnd="4dp">
+
+        <!-- Search Icon -->
+        <ImageView
+            android:id="@+id/search_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_search"
+            android:contentDescription="@string/search_icon_desc" />
+
+        <EditText
+            android:id="@+id/search_input"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:hint="@string/search_hint"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            android:textColor="#EEEEEE"
+            android:textColorHint="#888888"
+            android:background="@android:color/transparent"
+            android:textSize="14sp"
+            android:maxLines="1"
+            tools:text="Type to search..." />
+
+        <!-- Clear button (visible when text entered) -->
+        <ImageButton
+            android:id="@+id/clear_button"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_clear"
+            android:contentDescription="@string/clear_button_desc"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:visibility="gone"
+            android:padding="8dp" />
+
+        <!-- Close panel button -->
+        <ImageButton
+            android:id="@+id/close_button"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:contentDescription="@string/close_button_desc"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="8dp" />
+
+    </LinearLayout>
+
+    <!-- Recent searches section (shown when history exists and no active search) -->
+    <LinearLayout
+        android:id="@+id/history_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:paddingTop="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/section_recent"
+                android:textColor="#00BCD4"
+                android:textSize="11sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.05"
+                android:fontFamily="sans-serif-medium"
+                android:paddingBottom="8dp"
+                android:paddingStart="4dp" />
+
+            <TextView
+                android:id="@+id/clear_history_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_all"
+                android:textColor="#888888"
+                android:textSize="11sp"
+                android:padding="4dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/history_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/address_history_item" />
+
+    </LinearLayout>
+
+    <!-- Status message (searching, errors) -->
+    <TextView
+        android:id="@+id/search_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#AAAAAA"
+        android:textSize="12sp"
+        android:paddingTop="12dp"
+        android:paddingStart="4dp"
+        android:visibility="gone"
+        tools:text="Searching..."
+        tools:visibility="visible" />
+
+    <!-- Section Header: LOCATIONS -->
+    <TextView
+        android:id="@+id/section_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/section_locations"
+        android:textColor="#00BCD4"
+        android:textSize="11sp"
+        android:textAllCaps="true"
+        android:letterSpacing="0.05"
+        android:fontFamily="sans-serif-medium"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="4dp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <!-- Search results list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:listitem="@layout/address_search_result_item" />
+
+</LinearLayout>

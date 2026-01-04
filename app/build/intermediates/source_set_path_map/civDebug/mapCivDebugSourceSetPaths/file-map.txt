@@ -1,0 +1,12 @@
+com.gotak.address.plugin.app-core-1.3.2-0 C:\Users\matth\.gradle\caches\8.13\transforms\2e2e92604551e251ca248b6fee2e75ac\transformed\core-1.3.2\res
+com.gotak.address.plugin.app-recyclerview-1.2.1-1 C:\Users\matth\.gradle\caches\8.13\transforms\d6729441e7c691fbfb65f4927e9ae2e4\transformed\recyclerview-1.2.1\res
+com.gotak.address.plugin.app-cardview-1.0.0-2 C:\Users\matth\.gradle\caches\8.13\transforms\f2d8c439061ab03a948e5c01b5fbca19\transformed\cardview-1.0.0\res
+com.gotak.address.plugin.app-debug-3 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build-types\debug\res
+com.gotak.address.plugin.app-civ-4 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\generated\res\pngs\civ\debug
+com.gotak.address.plugin.app-civ-5 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\generated\res\resValues\civ\debug
+com.gotak.address.plugin.app-packageCivDebugResources-6 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\intermediates\incremental\civDebug\packageCivDebugResources\merged.dir
+com.gotak.address.plugin.app-packageCivDebugResources-7 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\intermediates\incremental\civDebug\packageCivDebugResources\stripped.dir
+com.gotak.address.plugin.app-civDebug-8 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\build\intermediates\merged_res\civDebug\mergeCivDebugResources
+com.gotak.address.plugin.app-civ-9 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\civ\res
+com.gotak.address.plugin.app-civDebug-10 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\civDebug\res
+com.gotak.address.plugin.app-main-11 C:\Users\matth\Development\ATAK-Plugins\ATAK-CIV-5.4.0.24-SDK\plugins\Address-ATAK-Plugin\app\src\main\res
