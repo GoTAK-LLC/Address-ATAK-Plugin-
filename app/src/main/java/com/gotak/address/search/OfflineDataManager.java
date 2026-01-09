@@ -162,7 +162,14 @@ public class OfflineDataManager {
             
             // Parse JSON
             JSONObject manifest = new JSONObject(response.toString());
-            JSONArray statesArray = manifest.getJSONArray("states");
+            // Support both "states" and "regions" keys for compatibility
+            JSONArray statesArray = manifest.optJSONArray("states");
+            if (statesArray == null) {
+                statesArray = manifest.optJSONArray("regions");
+            }
+            if (statesArray == null) {
+                throw new JSONException("No 'states' or 'regions' array in manifest");
+            }
             
             List<StateInfo> states = new ArrayList<>();
             for (int i = 0; i < statesArray.length(); i++) {
