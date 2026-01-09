@@ -184,16 +184,6 @@ python build_state_db.py --city "Tokyo" --bbox 139.5,35.5,140.0,36.0
 python build_state_db.py --list-regions
 ```
 
-### Database Sizes (Approximate)
-
-| Region | PBF Download | Database |
-|--------|--------------|----------|
-| Delaware | 20 MB | 5-10 MB |
-| Virginia | 180 MB | 50-80 MB |
-| California | 900 MB | 150-200 MB |
-| Germany | 4 GB | 400-600 MB |
-| Japan | 2 GB | 200-350 MB |
-
 ### What's Included
 
 Each database contains:
