@@ -869,27 +869,33 @@ Available Geofabrik regions:
             print(f"Try: {', '.join(sorted(US_STATES.keys())[:5])}...")
             return
         
+        # Use full state name (e.g., "Arkansas"), not abbreviation
+        state_full_name = state_key.replace('-', ' ').title()
+        
         print(f"\n{'='*60}")
-        print(f"Building: {args.state.title()} ({US_STATES[state_key]})")
+        print(f"Building: {state_full_name} ({US_STATES[state_key]})")
         print(f"{'='*60}")
         
         print("\n[1/3] Downloading OSM data...")
         pbf_path = download_us_state(state_key, args.cache_dir)
         db_path = args.output_dir / f"{state_key}.db"
-        build_database(pbf_path, db_path, US_STATES[state_key])
+        build_database(pbf_path, db_path, state_full_name)
         build_manifest(args.output_dir)
     
     # All US
     elif args.all_us:
         for state_key in US_STATES:
             try:
+                # Use full state name (e.g., "New York"), not abbreviation
+                state_full_name = state_key.replace('-', ' ').title()
+                
                 print(f"\n{'='*60}")
-                print(f"Building: {state_key.title()}")
+                print(f"Building: {state_full_name} ({US_STATES[state_key]})")
                 print(f"{'='*60}")
                 print("\n[1/3] Downloading OSM data...")
                 pbf_path = download_us_state(state_key, args.cache_dir)
                 db_path = args.output_dir / f"{state_key}.db"
-                build_database(pbf_path, db_path, US_STATES[state_key])
+                build_database(pbf_path, db_path, state_full_name)
             except Exception as e:
                 print(f"ERROR: {e}")
         build_manifest(args.output_dir)
