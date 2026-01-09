@@ -8,78 +8,134 @@
   <a href="https://getgotak.com/activate">
     <img src="https://img.shields.io/badge/Download-Get%20Plugin-blue?style=for-the-badge" alt="Download">
   </a>
+  <a href="https://github.com/GoTAK-LLC/Address-ATAK-Plugin-/releases/tag/databases">
+    <img src="https://img.shields.io/badge/Offline_Data-Download-green?style=for-the-badge" alt="Offline Data">
+  </a>
 </p>
 
-The Address Plugin extends ATAK with powerful geocoding capabilities for both online and offline operations. It provides real-time location awareness, address search, marker placement, and navigation integration.
+The Address Plugin extends ATAK with powerful geocoding and POI search capabilities for both online and offline operations. Search addresses, find nearby points of interest, drop tactical markers, and navigate—all with or without internet connectivity.
 
-## Features
-
-### 🏠 Self-Location Address Display
-- Shows your current street address above your callsign on the map
-- Updates automatically as you move (50ft threshold to conserve bandwidth)
-- Caches addresses across app restarts
-- Single-tap to refresh, double-tap to open settings
+## ✨ Key Features
 
 ### 🔍 Address Search
-- Search for addresses, POIs, and locations using Nominatim/Photon APIs
-- **Offline search** with downloadable state databases
+- **Fuzzy text search** - Find addresses even with typos or partial matches
+- **Online search** via Nominatim/Photon APIs
+- **Offline search** with downloadable regional databases (FTS5 full-text search)
 - Search history with quick access to recent locations
 - Location type icons (city, building, road, etc.)
 
-### 📍 Marker Placement
+### 📍 Nearby POI Search
+Find points of interest near your location or any map position:
+
+| Category | POI Types |
+|----------|-----------|
+| 🏥 **Medical** | Hospitals, Pharmacies, Clinics, Dentists |
+| 🚨 **Emergency** | Fire Stations, Police Stations |
+| ✈️ **Transport** | Airports, Heliports, Railway Stations, Ferries |
+| ⛽ **Services** | Gas Stations, Banks, ATMs, Post Offices |
+| 🏛️ **Government** | Embassies, Government Buildings, Prisons |
+| 📡 **Infrastructure** | Comm Towers, Cell Towers, Power Stations |
+| 🍽️ **Food & Lodging** | Restaurants, Hotels, Cafes, Bars |
+| 🛒 **Shopping** | Supermarkets, Convenience Stores, Malls |
+
+- **Radius search** - 1km to 50km range
+- **Works offline** with R*Tree spatial indexing
+- **Distance display** to each POI
+
+### 🎯 Marker Placement & CoT Dispatch
 - Drop markers directly from search results
-- **MIL-STD-2525 marker type selection**:
-  - 🔵 **Friendly** (Blue Rectangle)
-  - 🔴 **Hostile** (Red Diamond)
-  - 🟢 **Neutral** (Green Square)
-  - 🟡 **Unknown** (Yellow Quatrefoil)
-- Markers include address in remarks field
+- **Markers broadcast as CoT** to all connected TAK devices
+- **MIL-STD-2525 affiliation selection**:
+  - 🔵 **Friendly** (Blue)
+  - 🔴 **Hostile** (Red)
+  - 🟢 **Neutral** (Green)
+  - 🟡 **Unknown** (Yellow)
+- Address included in marker remarks
 
 ### 🧭 Bloodhound Navigation
-- Navigate to any search result using ATAK's Bloodhound tool
+- Navigate to any search result or POI
 - Automatic marker placement at destination
 - Supports VNS (Vehicle Navigation System) integration
-- Works with turn-by-turn navigation
+- Works with ATAK's turn-by-turn navigation
 
-### 🗺️ Map Center Crosshairs Geocoding
-- Shows geocoded address for map center crosshairs
-- Only active when ATAK's "Designate Map Centre" is enabled
-- Displays in bottom-left corner (yellow text)
+### 🏠 Self-Location Widget
+- Shows your current street address on the map
+- Updates automatically as you move (50ft threshold)
+- Caches addresses across app restarts
+- Single-tap to refresh, double-tap for settings
 
-### 📴 Offline Geocoding
-- Download state/region databases for offline operation
-- Full-text search with fuzzy matching
-- No internet required after database download
-- Automatic fallback between online and offline sources
+### 🗺️ Map Center Geocoding
+- Shows address for map center crosshairs
+- Active when ATAK's "Designate Map Centre" is enabled
+- Yellow text display in bottom-left corner
 
-## Usage
+## 📴 Offline Databases
 
-### Opening the Search Panel
-Tap the search widget icon on the map to open the address search panel.
+Download pre-built databases for offline operation—no internet required after download.
 
-### Searching for Locations
-1. Type an address, city, or place name in the search box
-2. Results appear below with location type icons
-3. Tap a result to pan/zoom to that location
+### Available Regions
 
-### Dropping a Marker
+- **🇺🇸 All 50 US States**
+- **🇪🇺 European Countries** - Germany, France, Spain, UK, Italy, etc.
+- **🌏 Asian Countries** - Japan, South Korea, Taiwan, Philippines, etc.
+- **🌎 Americas** - Canada, Mexico, Brazil, Argentina, etc.
+- **🌍 Africa & Middle East** - Egypt, South Africa, Israel, Iraq, etc.
+- **🏝️ Oceania** - Australia, New Zealand
+
+### Download Pre-Built Databases
+
+Ready-to-use databases are available at:
+**[📦 Download Databases](https://github.com/GoTAK-LLC/Address-ATAK-Plugin-/releases/tag/databases)**
+
+Or download directly from within the plugin:
+1. Open Address Plugin → **Offline Data**
+2. Select your region
+3. Tap **Download**
+
+### 🆕 Request a New Region
+
+Anyone can request a database build via GitHub Issues:
+
+1. Go to [Create New Issue](https://github.com/GoTAK-LLC/Address-ATAK-Plugin-/issues/new/choose)
+2. Select **"🗺️ Request Database Build"**
+3. Set the title to `Build: your-region` (e.g., `Build: europe/france`)
+4. Submit—the build starts automatically!
+5. You'll be notified when it's ready to download
+
+**Example titles:**
+- `Build: virginia`
+- `Build: europe/spain`
+- `Build: asia/japan`
+- `Build: africa/egypt`
+
+## 🔧 Usage
+
+### Address Search
+1. Tap the search widget icon on the map
+2. Type an address, city, or place name
+3. Results appear with location type icons
+4. Tap a result to pan/zoom to that location
+
+### Nearby POI Search
+1. Open the Address Plugin
+2. Switch to the **Nearby** tab
+3. Select POI categories (hospitals, gas stations, etc.)
+4. Set search radius (1-50 km)
+5. Tap **Search** to find nearby POIs
+
+### Dropping Markers
 1. Tap the 📍 pin icon on any search result
-2. Select the marker type (Friendly/Hostile/Neutral/Unknown)
-3. Marker is placed with the address as the title
+2. Select marker affiliation (Friendly/Hostile/Neutral/Unknown)
+3. Marker is placed and **broadcast to all connected TAK devices**
 
-### Navigating with Bloodhound
-1. Tap the ➡️ navigate icon on any search result
+### Navigation
+1. Tap the ➡️ navigate icon on any result
 2. A marker is dropped at the destination
-3. Bloodhound activates automatically for navigation
+3. Bloodhound activates for navigation
 
-### Using Offline Mode
-1. Tap "📥 Offline Data" button in the search panel
-2. Select your state/region to download
-3. Once downloaded, searches work without internet
+## ⚙️ Settings
 
-## Settings
-
-Access plugin settings via: **ATAK Settings → Tool Preferences → Address Settings**
+Access via: **ATAK Settings → Tool Preferences → Address Settings**
 
 | Setting | Description |
 |---------|-------------|
@@ -89,28 +145,17 @@ Access plugin settings via: **ATAK Settings → Tool Preferences → Address Set
 | **Show Crosshairs Address** | Display address for map center |
 | **Save Search History** | Remember recent searches |
 
-## Offline Database Generation
+## 🛠️ Building Databases Locally
 
-For disconnected operations, you can generate offline address databases from OpenStreetMap data.
-
-### Quick Start
-
-```bash
-cd tools/
-pip install osmium requests
-python build_state_db.py virginia
-```
+For advanced users who want to build custom databases:
 
 ### Prerequisites
 
-**Windows:**
-```powershell
-pip install osmium requests
-```
-
-**Linux/macOS:**
 ```bash
-# Ubuntu/Debian
+# Windows
+pip install osmium requests
+
+# Linux
 sudo apt install python3-pip libosmium2-dev
 pip3 install osmium requests
 
@@ -119,56 +164,66 @@ brew install libosmium
 pip3 install osmium requests
 ```
 
-### Building Databases
+### Build Commands
 
-**Single State:**
 ```bash
+cd tools/
+
+# US State
 python build_state_db.py virginia
+python build_state_db.py california
+
+# International Region
+python build_state_db.py --region europe/germany
+python build_state_db.py --region asia/japan
+
+# City (via Overpass API)
+python build_state_db.py --city "Tokyo" --bbox 139.5,35.5,140.0,36.0
+
+# List available regions
+python build_state_db.py --list-regions
 ```
-
-**All States:**
-```bash
-python build_state_db.py --all
-```
-
-### Output Files
-
-| File | Description |
-|------|-------------|
-| `output/virginia.db` | SQLite database with FTS5 search |
-| `output/manifest.json` | Metadata for available regions |
-| `cache/*.osm.pbf` | Cached downloads for rebuilds |
 
 ### Database Sizes (Approximate)
 
-| State | Download | Database |
-|-------|----------|----------|
-| Virginia | 180 MB | 30-50 MB |
-| California | 900 MB | 100-150 MB |
-| Texas | 500 MB | 80-120 MB |
-| Wyoming | 30 MB | 5-10 MB |
+| Region | PBF Download | Database |
+|--------|--------------|----------|
+| Delaware | 20 MB | 5-10 MB |
+| Virginia | 180 MB | 50-80 MB |
+| California | 900 MB | 150-200 MB |
+| Germany | 4 GB | 400-600 MB |
+| Japan | 2 GB | 200-350 MB |
 
-### Hosting Your Own Databases
+### What's Included
 
-1. Build databases using the tools
-2. Create a GitHub repository (e.g., `atak-address-data`)
-3. Create a release and upload `.db` files + `manifest.json`
-4. Plugin downloads from: `https://github.com/USERNAME/atak-address-data/releases/latest/download/`
+Each database contains:
+- **Places** - Addresses, cities, POIs for text search (FTS5 indexed)
+- **POIs** - Categorized points of interest for spatial search (R*Tree indexed)
+- **Metadata** - Region info, place counts, creation date
 
-See `tools/README.md` for detailed database schema and query examples.
-
-## Requirements
+## 📋 Requirements
 
 - ATAK 4.5.0 or later
-- Internet connectivity for online geocoding
+- Internet connectivity for online search
 - Downloaded databases for offline operation
 
-## Downloads
+## 📥 Downloads
 
-TPC-signed releases are available at https://getgotak.com/activate. All production builds are digitally signed and verified for use with ATAK.
+TPC-signed releases are available at **[getgotak.com/activate](https://getgotak.com/activate)**. All production builds are digitally signed and verified for use with ATAK.
 
-## Privacy
+## 🔒 Privacy
 
-- **Self-location geocoding**: Uses ATAK's built-in geocoder by default
-- **Photon API fallback**: Optional, sends coordinates to photon.komoot.io
-- **Offline mode**: No data transmitted when using downloaded databases
+- **Self-location geocoding** - Uses ATAK's built-in geocoder by default
+- **Photon API fallback** - Optional, sends coordinates to photon.komoot.io
+- **Offline mode** - No data transmitted when using downloaded databases
+- **Nearby search** - Uses Overpass API online, or local database offline
+
+## 📄 License
+
+Copyright © GoTAK LLC. All rights reserved.
+
+---
+
+<p align="center">
+  <b>Made for operators who need reliable location intelligence, online or off.</b>
+</p>
