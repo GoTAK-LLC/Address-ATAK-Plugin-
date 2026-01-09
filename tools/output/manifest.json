@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "states": [
+    {
+      "id": "new-york",
+      "name": "New York",
+      "abbrev": "NY",
+      "size": 1469865984,
+      "place_count": 5677049,
+      "filename": "new-york.db"
+    },
+    {
+      "id": "virginia",
+      "name": "Virginia",
+      "abbrev": "VA",
+      "size": 527151104,
+      "place_count": 2081970,
+      "filename": "virginia.db"
+    }
+  ]
+}

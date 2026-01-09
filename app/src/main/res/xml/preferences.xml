@@ -46,6 +46,17 @@
         android:defaultValue="false"
         android:dependency="address_show_map_center" />
 
+    <!-- Nearby POI Settings -->
+    <PreferenceCategory
+        android:key="category_nearby"
+        android:title="Nearby POI" />
+
+    <com.atakmap.android.gui.PanCheckBoxPreference
+        android:key="nearby_use_custom_icons"
+        android:title="Use Custom Icons"
+        android:summary="Use custom POI icons on map markers. When off, uses standard CoT symbols."
+        android:defaultValue="true" />
+
     <!-- Search Settings -->
     <PreferenceCategory
         android:key="category_search"

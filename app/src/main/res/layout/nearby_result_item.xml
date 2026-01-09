@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="6dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!-- Selection checkbox -->
+    <CheckBox
+        android:id="@+id/nearby_result_checkbox"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="2dp"
+        android:buttonTint="#FFFFFF" />
+
+    <!-- POI Type Icon -->
+    <ImageView
+        android:id="@+id/nearby_result_icon"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="6dp"
+        android:scaleType="fitCenter"
+        tools:src="@drawable/ic_poi_hospital" />
+
+    <!-- Main content -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Name, type, and distance on same row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- POI Name -->
+            <TextView
+                android:id="@+id/nearby_result_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#EEEEEE"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="Memorial Hospital" />
+
+            <!-- POI Type - inline -->
+            <TextView
+                android:id="@+id/nearby_result_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#888888"
+                android:textSize="10sp"
+                android:paddingHorizontal="6dp"
+                tools:text="Hospital" />
+
+            <!-- Distance badge -->
+            <TextView
+                android:id="@+id/nearby_result_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#00BCD4"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                tools:text="1.2 km" />
+
+        </LinearLayout>
+
+        <!-- Address (optional) - only shown if available -->
+        <TextView
+            android:id="@+id/nearby_result_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#666666"
+            android:textSize="10sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:visibility="gone"
+            tools:text="123 Main Street, City"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <!-- Action buttons - smaller -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="4dp">
+
+        <!-- Navigate button -->
+        <ImageButton
+            android:id="@+id/nearby_navigate_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_navigation"
+            android:contentDescription="@string/navigate_to_poi"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:scaleType="fitCenter" />
+
+        <!-- Drop marker button -->
+        <ImageButton
+            android:id="@+id/nearby_marker_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_marker"
+            android:contentDescription="@string/drop_marker_at_poi"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:scaleType="fitCenter" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

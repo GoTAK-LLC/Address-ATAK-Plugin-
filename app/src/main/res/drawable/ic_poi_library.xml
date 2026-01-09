@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Library/Book -->
+    <path
+        android:fillColor="#795548"
+        android:pathData="M18,2H6c-1.1,0 -2,0.9 -2,2v16c0,1.1 0.9,2 2,2h12c1.1,0 2,-0.9 2,-2V4c0,-1.1 -0.9,-2 -2,-2z"/>
+    <path
+        android:fillColor="#D7CCC8"
+        android:pathData="M6,4h11v16H6z"/>
+    <path
+        android:fillColor="#795548"
+        android:pathData="M8,6h7v2H8z M8,10h7v1H8z M8,13h5v1H8z"/>
+</vector>
+

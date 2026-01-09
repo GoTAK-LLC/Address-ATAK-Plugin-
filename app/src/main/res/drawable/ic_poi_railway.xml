@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Train/railway symbol -->
+    <path
+        android:fillColor="#795548"
+        android:pathData="M12,2c-4,0 -8,0.5 -8,4v9.5C4,17.43 5.57,19 7.5,19L6,21v1h12v-1l-1.5,-2c1.93,0 3.5,-1.57 3.5,-3.5V6c0,-3.5 -4,-4 -8,-4z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M7.5,17A1.5,1.5 0,0 1,6 15.5,1.5 1.5,0 0,1 7.5,14 1.5,1.5 0,0 1,9 15.5,1.5 1.5,0 0,1 7.5,17z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M16.5,17A1.5,1.5 0,0 1,15 15.5,1.5 1.5,0 0,1 16.5,14 1.5,1.5 0,0 1,18 15.5,1.5 1.5,0 0,1 16.5,17z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M6,11V6h12v5z"/>
+</vector>
+

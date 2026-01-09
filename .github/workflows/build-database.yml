@@ -1,0 +1,90 @@
+name: Build Offline Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      region:
+        description: 'Region to build (e.g., europe/spain, asia/japan, virginia)'
+        required: true
+        type: string
+      upload_to_release:
+        description: 'Upload to releases (true/false)'
+        required: false
+        default: 'true'
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360  # 6 hour max
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libosmium2-dev
+          pip install osmium requests
+      
+      - name: Determine region type and name
+        id: region
+        run: |
+          REGION="${{ github.event.inputs.region }}"
+          
+          # Check if it's a US state or international region
+          if [[ "$REGION" == *"/"* ]]; then
+            # International region (e.g., europe/spain)
+            SAFE_NAME=$(echo "$REGION" | tr '/' '-')
+            ARGS="--region $REGION"
+          else
+            # US state (e.g., virginia)
+            SAFE_NAME="$REGION"
+            ARGS="$REGION"
+          fi
+          
+          echo "safe_name=$SAFE_NAME" >> $GITHUB_OUTPUT
+          echo "args=$ARGS" >> $GITHUB_OUTPUT
+          echo "Building: $REGION -> $SAFE_NAME.db"
+      
+      - name: Build database
+        working-directory: tools
+        run: |
+          python build_state_db.py ${{ steps.region.outputs.args }}
+      
+      - name: Show results
+        run: |
+          echo "=== Built Databases ==="
+          ls -lh tools/output/
+          echo ""
+          echo "=== Manifest ==="
+          cat tools/output/manifest.json
+      
+      - name: Upload as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.region.outputs.safe_name }}-database
+          path: |
+            tools/output/*.db
+            tools/output/manifest.json
+          retention-days: 30
+      
+      - name: Upload to Release
+        if: github.event.inputs.upload_to_release == 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: databases
+          name: Offline Databases
+          files: |
+            tools/output/${{ steps.region.outputs.safe_name }}.db
+            tools/output/manifest.json
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

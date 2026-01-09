@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Prison bars -->
+    <path
+        android:fillColor="#424242"
+        android:pathData="M2,4h20v2H2z M2,18h20v2H2z"/>
+    <path
+        android:fillColor="#424242"
+        android:pathData="M4,4h2v16H4z M9,4h2v16H9z M14,4h2v16h-2z M19,4h2v16h-2z"/>
+    <path
+        android:fillColor="#757575"
+        android:pathData="M2,10h20v2H2z"/>
+</vector>
+

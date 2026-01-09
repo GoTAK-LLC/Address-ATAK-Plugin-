@@ -29,3 +29,7 @@ Thumbs.db
 # Logs
 *.log
 
+# Offline address databases (too large for git)
+tools/output/*.db
+tools/cache/*.osm.pbf
+tools/cache/*.osm

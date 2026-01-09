@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Category + Radius + Location + Search - all on one row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Category Selection Button - takes more space -->
+        <Button
+            android:id="@+id/nearby_select_categories"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="2"
+            android:text="@string/categories"
+            android:textColor="#EEEEEE"
+            android:textSize="10sp"
+            android:background="@drawable/bg_button_dark"
+            android:paddingHorizontal="6dp"
+            android:minWidth="0dp" />
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="3dp"
+            android:layout_height="0dp" />
+
+        <!-- Radius controls -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_button_dark"
+            android:paddingHorizontal="2dp">
+
+            <!-- Decrease radius -->
+            <ImageButton
+                android:id="@+id/nearby_radius_decrease"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_remove"
+                android:contentDescription="@string/decrease_radius"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="2dp" />
+
+            <!-- Radius value display -->
+            <TextView
+                android:id="@+id/nearby_radius_value"
+                android:layout_width="32dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#EEEEEE"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                tools:text="5 km" />
+
+            <!-- Increase radius -->
+            <ImageButton
+                android:id="@+id/nearby_radius_increase"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_add"
+                android:contentDescription="@string/increase_radius"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="2dp" />
+
+        </LinearLayout>
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="3dp"
+            android:layout_height="0dp" />
+
+        <!-- Location segmented toggle - Me | Map - fills remaining width -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_button_dark"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/nearby_location_self"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/loc_me"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:background="#FF9800" />
+
+            <TextView
+                android:id="@+id/nearby_location_map"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/loc_map"
+                android:textSize="10sp"
+                android:textColor="#888888"
+                android:background="@android:color/transparent" />
+
+        </LinearLayout>
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="3dp"
+            android:layout_height="0dp" />
+
+        <!-- Search button with spinner -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="32dp">
+
+            <Button
+                android:id="@+id/nearby_search_button"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="@string/search"
+                android:textColor="#FFFFFF"
+                android:textSize="9sp"
+                android:background="@drawable/bg_button_accent"
+                android:paddingHorizontal="10dp"
+                android:minWidth="0dp" />
+
+            <ProgressBar
+                android:id="@+id/nearby_search_spinner"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:indeterminateTint="#FFFFFF"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- Status message -->
+    <TextView
+        android:id="@+id/nearby_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#AAAAAA"
+        android:textSize="11sp"
+        android:paddingTop="8dp"
+        android:paddingStart="4dp"
+        android:visibility="gone"
+        tools:text="Searching..."
+        tools:visibility="visible" />
+
+    <!-- Results header with select all and add to map -->
+    <LinearLayout
+        android:id="@+id/nearby_results_header_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"
+        android:paddingHorizontal="4dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/nearby_results_header"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/section_nearby_results"
+            android:textColor="#00BCD4"
+            android:textSize="11sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.05"
+            android:fontFamily="sans-serif-medium" />
+
+        <!-- Select All -->
+        <TextView
+            android:id="@+id/nearby_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/select_all"
+            android:textColor="#00BCD4"
+            android:textSize="11sp"
+            android:padding="4dp"
+            android:background="?android:attr/selectableItemBackground" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="|"
+            android:textColor="#555555"
+            android:textSize="11sp"
+            android:paddingHorizontal="4dp" />
+
+        <!-- Deselect All -->
+        <TextView
+            android:id="@+id/nearby_deselect_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/deselect_all"
+            android:textColor="#AAAAAA"
+            android:textSize="11sp"
+            android:padding="4dp"
+            android:background="?android:attr/selectableItemBackground" />
+
+        <!-- Broadcast checkbox -->
+        <CheckBox
+            android:id="@+id/nearby_broadcast_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/broadcast"
+            android:textColor="#AAAAAA"
+            android:textSize="10sp"
+            android:buttonTint="#FFFFFF"
+            android:checked="false"
+            android:layout_marginStart="8dp" />
+
+        <!-- Add to Map button -->
+        <Button
+            android:id="@+id/nearby_add_to_map"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="@string/add_to_map"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:background="@drawable/bg_button_orange"
+            android:paddingHorizontal="12dp"
+            android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
+    <!-- Results list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/nearby_results_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:listitem="@layout/nearby_result_item" />
+
+</LinearLayout>
+

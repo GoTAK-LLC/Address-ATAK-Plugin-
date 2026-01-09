@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Communications/Cell tower -->
+    <path
+        android:fillColor="#F57C00"
+        android:pathData="M12,3L8,7v2h3v12h2V9h3V7L12,3z"/>
+    <path
+        android:fillColor="#F57C00"
+        android:pathData="M5.64,8.64l1.41,1.41C5.78,11.32 5,13.09 5,15c0,1.91 0.78,3.68 2.05,4.95l-1.41,1.41C3.98,19.7 3,17.47 3,15s0.98,-4.7 2.64,-6.36z"/>
+    <path
+        android:fillColor="#F57C00"
+        android:pathData="M18.36,8.64C20.02,10.3 21,12.53 21,15s-0.98,4.7 -2.64,6.36l-1.41,-1.41C18.22,18.68 19,16.91 19,15c0,-1.91 -0.78,-3.68 -2.05,-4.95l1.41,-1.41z"/>
+    <path
+        android:fillColor="#FFB74D"
+        android:pathData="M8.46,11.46l1.41,1.41C9.33,13.41 9,14.17 9,15s0.33,1.59 0.87,2.13l-1.41,1.41C7.56,17.63 7,16.38 7,15s0.56,-2.63 1.46,-3.54z"/>
+    <path
+        android:fillColor="#FFB74D"
+        android:pathData="M15.54,11.46C16.44,12.37 17,13.62 17,15s-0.56,2.63 -1.46,3.54l-1.41,-1.41C14.67,16.59 15,15.83 15,15s-0.33,-1.59 -0.87,-2.13l1.41,-1.41z"/>
+</vector>
+

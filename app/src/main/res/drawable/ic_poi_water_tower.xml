@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Water tower/drop -->
+    <path
+        android:fillColor="#2196F3"
+        android:pathData="M12,2c-5.33,4.55 -8,8.48 -8,11.8 0,4.98 3.8,8.2 8,8.2s8,-3.22 8,-8.2c0,-3.32 -2.67,-7.25 -8,-11.8z"/>
+    <path
+        android:fillColor="#64B5F6"
+        android:pathData="M12,20c-3.35,0 -6,-2.57 -6,-6.2 0,-2.34 1.95,-5.44 6,-9.14 4.05,3.7 6,6.79 6,9.14 0,3.63 -2.65,6.2 -6,6.2z"/>
+    <path
+        android:fillColor="#BBDEFB"
+        android:pathData="M7.83,14c0.37,0 0.67,0.26 0.74,0.62 0.41,2.22 2.28,2.98 3.64,2.87 0.43,-0.02 0.79,0.32 0.79,0.75 0,0.4 -0.32,0.73 -0.72,0.75 -2.13,0.13 -4.62,-1.09 -5.19,-4.12 -0.08,-0.45 0.28,-0.87 0.74,-0.87z"/>
+</vector>
+
