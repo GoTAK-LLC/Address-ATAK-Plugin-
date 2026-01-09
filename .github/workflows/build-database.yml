@@ -77,14 +77,30 @@ jobs:
       
       - name: Upload to Release
         if: github.event.inputs.upload_to_release == 'true'
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: databases
-          name: Offline Databases
-          files: |
-            tools/output/${{ steps.region.outputs.safe_name }}.db
-            tools/output/manifest.json
-          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create release if it doesn't exist
+          if ! gh release view databases > /dev/null 2>&1; then
+            echo "Creating 'databases' release..."
+            gh release create databases \
+              --title "Offline Databases" \
+              --notes "Pre-built offline address databases for the Address ATAK Plugin. Download the .db file for your region and place it in /sdcard/atak/tools/address/" \
+              --latest
+          fi
+          
+          # Upload database file (overwrite if exists)
+          echo "Uploading ${{ steps.region.outputs.safe_name }}.db..."
+          gh release upload databases \
+            "tools/output/${{ steps.region.outputs.safe_name }}.db" \
+            --clobber
+          
+          # Upload manifest (overwrite if exists)  
+          echo "Uploading manifest.json..."
+          gh release upload databases \
+            "tools/output/manifest.json" \
+            --clobber
+          
+          echo "✅ Upload complete!"
+          echo "Download at: https://github.com/${{ github.repository }}/releases/tag/databases"
 
