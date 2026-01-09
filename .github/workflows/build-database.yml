@@ -98,7 +98,43 @@ jobs:
             "tools/output/${{ steps.region.outputs.safe_name }}.db" \
             --clobber
           
-          # Upload manifest (overwrite if exists)  
+          # Download existing manifest and merge with new one
+          echo "Merging manifest.json..."
+          if gh release download databases --pattern "manifest.json" --dir /tmp 2>/dev/null; then
+            echo "Downloaded existing manifest, merging..."
+            python3 << 'EOF'
+          import json
+
+          # Load existing manifest
+          with open('/tmp/manifest.json', 'r') as f:
+              existing = json.load(f)
+
+          # Load new manifest
+          with open('tools/output/manifest.json', 'r') as f:
+              new = json.load(f)
+
+          # Merge regions (new entries override existing with same id)
+          existing_regions = {r['id']: r for r in existing.get('regions', [])}
+          for region in new.get('regions', []):
+              existing_regions[region['id']] = region
+
+          # Update manifest
+          existing['regions'] = sorted(existing_regions.values(), key=lambda x: x['name'])
+          existing['version'] = new.get('version', existing.get('version', '2.0'))
+          existing['schema_version'] = new.get('schema_version', existing.get('schema_version', 2))
+          existing['poi_categories'] = new.get('poi_categories', existing.get('poi_categories', []))
+
+          # Write merged manifest
+          with open('tools/output/manifest.json', 'w') as f:
+              json.dump(existing, f, indent=2)
+
+          print(f"Merged manifest now has {len(existing['regions'])} regions")
+          EOF
+          else
+            echo "No existing manifest, using new one"
+          fi
+          
+          # Upload merged manifest
           echo "Uploading manifest.json..."
           gh release upload databases \
             "tools/output/manifest.json" \

@@ -43,6 +43,7 @@ zip -r "$ZIP_PATH" "$PROJECT_NAME" \
     -x "$PROJECT_NAME/.gradle/*" \
     -x "$PROJECT_NAME/build/*" \
     -x "$PROJECT_NAME/app/build/*" \
+    -x "$PROJECT_NAME/tools/*" \
     > /dev/null
 
 popd >/dev/null
