@@ -1,0 +1,149 @@
+name: Build Database from Issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  check-and-build:
+    # Only run if issue title starts with "Build:"
+    if: startsWith(github.event.issue.title, 'Build:')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Parse region from issue title
+        id: parse
+        run: |
+          TITLE="${{ github.event.issue.title }}"
+          # Extract region after "Build:" (trim whitespace)
+          REGION=$(echo "$TITLE" | sed 's/^Build:[[:space:]]*//')
+          echo "Region requested: $REGION"
+          echo "region=$REGION" >> $GITHUB_OUTPUT
+          
+          # Create safe name for filename
+          SAFE_NAME=$(echo "$REGION" | tr '/' '-' | tr ' ' '-' | tr '[:upper:]' '[:lower:]')
+          echo "safe_name=$SAFE_NAME" >> $GITHUB_OUTPUT
+
+      - name: Add reaction and comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Add rocket reaction to show we're working on it
+            await github.rest.reactions.createForIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              content: 'rocket'
+            });
+            
+            // Comment that build is starting
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `🚀 **Build started!**\n\nBuilding database for: \`${{ steps.parse.outputs.region }}\`\n\nThis may take 10-60 minutes depending on region size. I'll comment here when it's done.\n\n[Watch progress](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`
+            });
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libosmium2-dev
+          pip install osmium requests
+
+      - name: Determine build arguments
+        id: args
+        run: |
+          REGION="${{ steps.parse.outputs.region }}"
+          
+          # Check if it's a US state or international region
+          if [[ "$REGION" == *"/"* ]]; then
+            echo "args=--region $REGION" >> $GITHUB_OUTPUT
+          else
+            echo "args=$REGION" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build database
+        id: build
+        working-directory: tools
+        run: |
+          python build_state_db.py ${{ steps.args.outputs.args }}
+
+      - name: Upload to Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create release if it doesn't exist
+          if ! gh release view databases > /dev/null 2>&1; then
+            gh release create databases \
+              --title "Offline Databases" \
+              --notes "Pre-built offline address databases for the Address ATAK Plugin."
+          fi
+          
+          # Upload database file
+          gh release upload databases \
+            "tools/output/${{ steps.parse.outputs.safe_name }}.db" \
+            --clobber
+          
+          # Upload manifest
+          gh release upload databases \
+            "tools/output/manifest.json" \
+            --clobber
+
+      - name: Comment success and close issue
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const region = '${{ steps.parse.outputs.region }}';
+            const safeName = '${{ steps.parse.outputs.safe_name }}';
+            const downloadUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/releases/download/databases/${safeName}.db`;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `✅ **Build complete!**\n\n**Region:** ${region}\n\n**Download:** [${safeName}.db](${downloadUrl})\n\nThe database is now available in the [Releases](https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/databases) and will appear in the ATAK plugin's offline data manager.`
+            });
+            
+            // Close the issue
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed',
+              labels: ['build-complete']
+            });
+
+      - name: Comment failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `❌ **Build failed!**\n\nThe build for \`${{ steps.parse.outputs.region }}\` encountered an error.\n\n[View logs](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\nPlease check:\n- Is the region name correct?\n- For US states: \`virginia\`, \`california\`, \`new-york\`\n- For countries: \`europe/spain\`, \`asia/japan\`, \`africa/egypt\``
+            });
+            
+            // Add failed label
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['build-failed']
+            });
+
