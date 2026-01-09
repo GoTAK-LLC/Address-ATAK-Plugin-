@@ -208,6 +208,214 @@ public class OfflineAddressDatabase {
         return results;
     }
     
+    /**
+     * Search a specific state's database for places matching the query.
+     * 
+     * @param stateId The state database ID (e.g., "arkansas", "new-york")
+     * @param query The search query
+     * @param limit Maximum number of results
+     * @return List of matching results, or empty list if state not available
+     */
+    public List<NominatimSearchResult> searchState(String stateId, String query, int limit) {
+        if (!openState(stateId)) {
+            Log.w(TAG, "Could not open state database: " + stateId);
+            return new ArrayList<>();
+        }
+        return search(query, limit);
+    }
+    
+    /**
+     * Search a specific state's database for places and POIs matching a name.
+     * This is useful for queries like "walmart arkansas" where we want to find
+     * both address entries and POIs with that name.
+     * 
+     * @param stateId The state database ID (e.g., "arkansas", "new-york")
+     * @param name The name to search for (e.g., "walmart", "target")
+     * @return Combined list of matching places and POIs
+     */
+    public List<NominatimSearchResult> searchStateByName(String stateId, String name) {
+        List<NominatimSearchResult> results = new ArrayList<>();
+        
+        if (!openState(stateId)) {
+            Log.w(TAG, "Could not open state database: " + stateId);
+            return results;
+        }
+        
+        // Search places table
+        results.addAll(search(name, DEFAULT_LIMIT));
+        
+        // Also search POIs by name if the table exists
+        if (hasPOIData()) {
+            List<NominatimSearchResult> poiResults = searchPOIsByName(name, DEFAULT_LIMIT);
+            results.addAll(poiResults);
+        }
+        
+        // Remove duplicates (based on osm_id) and limit total
+        List<NominatimSearchResult> uniqueResults = new ArrayList<>();
+        java.util.Set<Long> seenIds = new java.util.HashSet<>();
+        for (NominatimSearchResult r : results) {
+            if (!seenIds.contains(r.getOsmId())) {
+                seenIds.add(r.getOsmId());
+                uniqueResults.add(r);
+            }
+            if (uniqueResults.size() >= DEFAULT_LIMIT) break;
+        }
+        
+        return uniqueResults;
+    }
+    
+    /**
+     * Search POIs by name within the current database.
+     * Used for queries like "walmart" or "starbucks" within a specific state.
+     */
+    private List<NominatimSearchResult> searchPOIsByName(String name, int limit) {
+        List<NominatimSearchResult> results = new ArrayList<>();
+        
+        if (currentDb == null || !currentDb.isOpen()) {
+            return results;
+        }
+        
+        Cursor cursor = null;
+        try {
+            String likeQuery = "%" + name.replace("%", "").replace("_", "") + "%";
+            
+            String sql = 
+                "SELECT id, osm_id, osm_type, lat, lon, name, category, address " +
+                "FROM pois " +
+                "WHERE name LIKE ? " +
+                "ORDER BY name " +
+                "LIMIT ?";
+            
+            cursor = currentDb.rawQuery(sql, new String[]{likeQuery, String.valueOf(limit)});
+            
+            while (cursor.moveToNext()) {
+                try {
+                    long id = cursor.getLong(cursor.getColumnIndexOrThrow("id"));
+                    long osmId = cursor.getLong(cursor.getColumnIndexOrThrow("osm_id"));
+                    String osmType = cursor.getString(cursor.getColumnIndexOrThrow("osm_type"));
+                    double lat = cursor.getDouble(cursor.getColumnIndexOrThrow("lat"));
+                    double lon = cursor.getDouble(cursor.getColumnIndexOrThrow("lon"));
+                    String poiName = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                    String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+                    String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
+                    
+                    // Build display name from POI info
+                    String displayName = poiName;
+                    if (address != null && !address.isEmpty()) {
+                        displayName = poiName + ", " + address;
+                    }
+                    
+                    // Map category to a type string
+                    String type = category != null ? category.toLowerCase().replace("_", " ") : "poi";
+                    
+                    results.add(new NominatimSearchResult(
+                            id, lat, lon, displayName, poiName, type, osmType, osmId
+                    ));
+                } catch (Exception e) {
+                    Log.e(TAG, "Error parsing POI result: " + e.getMessage());
+                }
+            }
+            
+            Log.d(TAG, "POI name search '" + name + "' found " + results.size() + " results");
+            
+        } catch (Exception e) {
+            Log.e(TAG, "POI name search error: " + e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        
+        return results;
+    }
+    
+    /**
+     * Search all POIs within a specific state by category.
+     * Unlike searchPOIs which searches by location, this searches the entire state.
+     * 
+     * @param stateId The state database ID
+     * @param categories POI categories to search for
+     * @param limit Maximum number of results
+     * @return List of POI results
+     */
+    public List<OverpassSearchResult> searchStatePOIsByCategory(
+            String stateId, java.util.Set<PointOfInterestType> categories, int limit) {
+        
+        List<OverpassSearchResult> results = new ArrayList<>();
+        
+        if (!openState(stateId) || !hasPOIData()) {
+            return results;
+        }
+        
+        if (categories == null || categories.isEmpty()) {
+            return results;
+        }
+        
+        // Build category filter
+        StringBuilder categoryFilter = new StringBuilder();
+        List<String> categoryNames = new ArrayList<>();
+        for (PointOfInterestType type : categories) {
+            if (categoryFilter.length() > 0) {
+                categoryFilter.append(" OR ");
+            }
+            categoryFilter.append("category = ?");
+            categoryNames.add(type.name());
+        }
+        
+        Cursor cursor = null;
+        try {
+            String sql = 
+                "SELECT id, osm_id, osm_type, lat, lon, name, category, address, phone, website, opening_hours " +
+                "FROM pois " +
+                "WHERE " + categoryFilter + " " +
+                "ORDER BY name " +
+                "LIMIT ?";
+            
+            String[] args = new String[categoryNames.size() + 1];
+            for (int i = 0; i < categoryNames.size(); i++) {
+                args[i] = categoryNames.get(i);
+            }
+            args[args.length - 1] = String.valueOf(limit);
+            
+            cursor = currentDb.rawQuery(sql, args);
+            
+            while (cursor.moveToNext()) {
+                try {
+                    long osmId = cursor.getLong(cursor.getColumnIndexOrThrow("osm_id"));
+                    String osmType = cursor.getString(cursor.getColumnIndexOrThrow("osm_type"));
+                    double lat = cursor.getDouble(cursor.getColumnIndexOrThrow("lat"));
+                    double lon = cursor.getDouble(cursor.getColumnIndexOrThrow("lon"));
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                    String categoryStr = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+                    String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
+                    
+                    PointOfInterestType poiType = null;
+                    try {
+                        poiType = PointOfInterestType.valueOf(categoryStr);
+                    } catch (IllegalArgumentException ignored) {}
+                    
+                    // No distance calculation since we're not searching by location
+                    results.add(new OverpassSearchResult(
+                        osmId, osmType, name, lat, lon, 0, poiType, address, null
+                    ));
+                } catch (Exception e) {
+                    Log.e(TAG, "Error parsing POI result: " + e.getMessage());
+                }
+            }
+            
+            Log.d(TAG, "State POI category search found " + results.size() + " results in " + stateId);
+            
+        } catch (Exception e) {
+            Log.e(TAG, "State POI category search error: " + e.getMessage(), e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        
+        return results;
+    }
+    
     // ============ POI SPATIAL SEARCH ============
     
     /**

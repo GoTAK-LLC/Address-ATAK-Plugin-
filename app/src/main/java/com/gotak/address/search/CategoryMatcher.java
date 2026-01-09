@@ -18,6 +18,9 @@ import java.util.regex.Pattern;
  * - "coffee shop nearby"
  * - "cemetery near"
  * - "hospital"
+ * - "gas arkansas" (state-specific POI search)
+ * - "walmart texas" (state-specific name search)
+ * - "hospital in virginia" (location with preposition)
  * 
  * Uses keyword aliases and fuzzy matching to map user input to POI categories.
  */
@@ -29,11 +32,20 @@ public class CategoryMatcher {
             Pattern.CASE_INSENSITIVE
     );
     
+    // Pattern for "in [location]" suffix (e.g., "gas stations in arkansas")
+    private static final Pattern IN_LOCATION_PATTERN = Pattern.compile(
+            "\\s+in\\s+(.+)$",
+            Pattern.CASE_INSENSITIVE
+    );
+    
     // Maximum Levenshtein distance for fuzzy matching (relative to word length)
     private static final double MAX_DISTANCE_RATIO = 0.3; // 30% of word length
     
     // Alias map: lowercase keyword -> POI type
     private static final Map<String, PointOfInterestType> ALIASES = new HashMap<>();
+    
+    // US State names and abbreviations -> database ID (lowercase, hyphenated)
+    private static final Map<String, String> STATE_NAMES = new HashMap<>();
     
     static {
         // Gas Station / Fuel
@@ -314,6 +326,115 @@ public class CategoryMatcher {
         
         // Water Tower
         ALIASES.put("water tower", PointOfInterestType.WATER_TOWER);
+        
+        // US State names and abbreviations -> database ID
+        // Full names (lowercase)
+        STATE_NAMES.put("alabama", "alabama");
+        STATE_NAMES.put("alaska", "alaska");
+        STATE_NAMES.put("arizona", "arizona");
+        STATE_NAMES.put("arkansas", "arkansas");
+        STATE_NAMES.put("california", "california");
+        STATE_NAMES.put("colorado", "colorado");
+        STATE_NAMES.put("connecticut", "connecticut");
+        STATE_NAMES.put("delaware", "delaware");
+        STATE_NAMES.put("florida", "florida");
+        STATE_NAMES.put("georgia", "georgia");
+        STATE_NAMES.put("hawaii", "hawaii");
+        STATE_NAMES.put("idaho", "idaho");
+        STATE_NAMES.put("illinois", "illinois");
+        STATE_NAMES.put("indiana", "indiana");
+        STATE_NAMES.put("iowa", "iowa");
+        STATE_NAMES.put("kansas", "kansas");
+        STATE_NAMES.put("kentucky", "kentucky");
+        STATE_NAMES.put("louisiana", "louisiana");
+        STATE_NAMES.put("maine", "maine");
+        STATE_NAMES.put("maryland", "maryland");
+        STATE_NAMES.put("massachusetts", "massachusetts");
+        STATE_NAMES.put("michigan", "michigan");
+        STATE_NAMES.put("minnesota", "minnesota");
+        STATE_NAMES.put("mississippi", "mississippi");
+        STATE_NAMES.put("missouri", "missouri");
+        STATE_NAMES.put("montana", "montana");
+        STATE_NAMES.put("nebraska", "nebraska");
+        STATE_NAMES.put("nevada", "nevada");
+        STATE_NAMES.put("new hampshire", "new-hampshire");
+        STATE_NAMES.put("new jersey", "new-jersey");
+        STATE_NAMES.put("new mexico", "new-mexico");
+        STATE_NAMES.put("new york", "new-york");
+        STATE_NAMES.put("north carolina", "north-carolina");
+        STATE_NAMES.put("north dakota", "north-dakota");
+        STATE_NAMES.put("ohio", "ohio");
+        STATE_NAMES.put("oklahoma", "oklahoma");
+        STATE_NAMES.put("oregon", "oregon");
+        STATE_NAMES.put("pennsylvania", "pennsylvania");
+        STATE_NAMES.put("rhode island", "rhode-island");
+        STATE_NAMES.put("south carolina", "south-carolina");
+        STATE_NAMES.put("south dakota", "south-dakota");
+        STATE_NAMES.put("tennessee", "tennessee");
+        STATE_NAMES.put("texas", "texas");
+        STATE_NAMES.put("utah", "utah");
+        STATE_NAMES.put("vermont", "vermont");
+        STATE_NAMES.put("virginia", "virginia");
+        STATE_NAMES.put("washington", "washington");
+        STATE_NAMES.put("west virginia", "west-virginia");
+        STATE_NAMES.put("wisconsin", "wisconsin");
+        STATE_NAMES.put("wyoming", "wyoming");
+        STATE_NAMES.put("district of columbia", "district-of-columbia");
+        STATE_NAMES.put("dc", "district-of-columbia");
+        STATE_NAMES.put("washington dc", "district-of-columbia");
+        STATE_NAMES.put("washington d.c.", "district-of-columbia");
+        
+        // Abbreviations
+        STATE_NAMES.put("al", "alabama");
+        STATE_NAMES.put("ak", "alaska");
+        STATE_NAMES.put("az", "arizona");
+        STATE_NAMES.put("ar", "arkansas");
+        STATE_NAMES.put("ca", "california");
+        STATE_NAMES.put("co", "colorado");
+        STATE_NAMES.put("ct", "connecticut");
+        STATE_NAMES.put("de", "delaware");
+        STATE_NAMES.put("fl", "florida");
+        STATE_NAMES.put("ga", "georgia");
+        STATE_NAMES.put("hi", "hawaii");
+        STATE_NAMES.put("id", "idaho");
+        STATE_NAMES.put("il", "illinois");
+        STATE_NAMES.put("in", "indiana");
+        STATE_NAMES.put("ia", "iowa");
+        STATE_NAMES.put("ks", "kansas");
+        STATE_NAMES.put("ky", "kentucky");
+        STATE_NAMES.put("la", "louisiana");
+        STATE_NAMES.put("me", "maine");
+        STATE_NAMES.put("md", "maryland");
+        STATE_NAMES.put("ma", "massachusetts");
+        STATE_NAMES.put("mi", "michigan");
+        STATE_NAMES.put("mn", "minnesota");
+        STATE_NAMES.put("ms", "mississippi");
+        STATE_NAMES.put("mo", "missouri");
+        STATE_NAMES.put("mt", "montana");
+        STATE_NAMES.put("ne", "nebraska");
+        STATE_NAMES.put("nv", "nevada");
+        STATE_NAMES.put("nh", "new-hampshire");
+        STATE_NAMES.put("nj", "new-jersey");
+        STATE_NAMES.put("nm", "new-mexico");
+        STATE_NAMES.put("ny", "new-york");
+        STATE_NAMES.put("nc", "north-carolina");
+        STATE_NAMES.put("nd", "north-dakota");
+        STATE_NAMES.put("oh", "ohio");
+        STATE_NAMES.put("ok", "oklahoma");
+        STATE_NAMES.put("or", "oregon");
+        STATE_NAMES.put("pa", "pennsylvania");
+        STATE_NAMES.put("ri", "rhode-island");
+        STATE_NAMES.put("sc", "south-carolina");
+        STATE_NAMES.put("sd", "south-dakota");
+        STATE_NAMES.put("tn", "tennessee");
+        STATE_NAMES.put("tx", "texas");
+        STATE_NAMES.put("ut", "utah");
+        STATE_NAMES.put("vt", "vermont");
+        STATE_NAMES.put("va", "virginia");
+        STATE_NAMES.put("wa", "washington");
+        STATE_NAMES.put("wv", "west-virginia");
+        STATE_NAMES.put("wi", "wisconsin");
+        STATE_NAMES.put("wy", "wyoming");
     }
     
     /**
@@ -324,13 +445,23 @@ public class CategoryMatcher {
         private final boolean isNearbyQuery;
         private final String originalQuery;
         private final String cleanedQuery;
+        private final String stateId;      // Database ID of detected state (e.g., "arkansas")
+        private final String searchTerm;   // The search term without location (e.g., "gas", "walmart")
         
         public MatchResult(PointOfInterestType category, boolean isNearbyQuery, 
                           String originalQuery, String cleanedQuery) {
+            this(category, isNearbyQuery, originalQuery, cleanedQuery, null, cleanedQuery);
+        }
+        
+        public MatchResult(PointOfInterestType category, boolean isNearbyQuery, 
+                          String originalQuery, String cleanedQuery, 
+                          String stateId, String searchTerm) {
             this.category = category;
             this.isNearbyQuery = isNearbyQuery;
             this.originalQuery = originalQuery;
             this.cleanedQuery = cleanedQuery;
+            this.stateId = stateId;
+            this.searchTerm = searchTerm;
         }
         
         public PointOfInterestType getCategory() {
@@ -349,6 +480,29 @@ public class CategoryMatcher {
             return cleanedQuery;
         }
         
+        /**
+         * Get the state database ID if a location was detected.
+         * @return State database ID (e.g., "arkansas", "new-york") or null
+         */
+        public String getStateId() {
+            return stateId;
+        }
+        
+        /**
+         * Get the search term without the location suffix.
+         * For "gas arkansas" this would return "gas".
+         */
+        public String getSearchTerm() {
+            return searchTerm;
+        }
+        
+        /**
+         * Check if this is a location-specific query.
+         */
+        public boolean hasLocation() {
+            return stateId != null;
+        }
+        
         public boolean hasMatch() {
             return category != null;
         }
@@ -356,6 +510,12 @@ public class CategoryMatcher {
     
     /**
      * Detect if a query is asking for a POI category search.
+     * 
+     * Handles patterns like:
+     * - "gas station near me" (nearby query)
+     * - "gas arkansas" (location-specific POI search)
+     * - "walmart texas" (location-specific name search)
+     * - "hospitals in virginia" (explicit location)
      * 
      * @param query The user's search query
      * @return MatchResult with detected category (if any) and metadata
@@ -376,6 +536,21 @@ public class CategoryMatcher {
             isNearbyQuery = true;
             cleanedQuery = normalizedQuery.substring(0, nearbyMatcher.start()).trim();
         }
+        
+        // Check for location patterns (e.g., "gas arkansas", "walmart in texas")
+        LocationParseResult locationResult = parseLocation(cleanedQuery);
+        if (locationResult != null) {
+            String searchTerm = locationResult.searchTerm;
+            String stateId = locationResult.stateId;
+            
+            // Try to match the search term to a category
+            PointOfInterestType category = matchCategoryFromTerm(searchTerm);
+            
+            // Return result with location info (even if no category match - it might be a name search like "walmart")
+            return new MatchResult(category, isNearbyQuery, query, cleanedQuery, stateId, searchTerm);
+        }
+        
+        // Standard category matching (no location specified)
         
         // Try exact match first (most accurate)
         PointOfInterestType exactMatch = ALIASES.get(cleanedQuery);
@@ -404,6 +579,180 @@ public class CategoryMatcher {
         // If it's a nearby query but no category found, still mark it
         // This allows the UI to show a helpful message
         return new MatchResult(null, isNearbyQuery, query, cleanedQuery);
+    }
+    
+    /**
+     * Result of parsing a location from a query.
+     */
+    private static class LocationParseResult {
+        final String searchTerm;
+        final String stateId;
+        
+        LocationParseResult(String searchTerm, String stateId) {
+            this.searchTerm = searchTerm;
+            this.stateId = stateId;
+        }
+    }
+    
+    /**
+     * Parse a location (state) from the query.
+     * Handles patterns like:
+     * - "gas arkansas" -> searchTerm="gas", stateId="arkansas"
+     * - "walmart in texas" -> searchTerm="walmart", stateId="texas"
+     * - "hospitals in new york" -> searchTerm="hospitals", stateId="new-york"
+     */
+    private static LocationParseResult parseLocation(String query) {
+        if (query == null || query.isEmpty()) {
+            return null;
+        }
+        
+        String searchTerm = query;
+        String locationPart = null;
+        
+        // Check for "in [location]" pattern first
+        Matcher inMatcher = IN_LOCATION_PATTERN.matcher(query);
+        if (inMatcher.find()) {
+            searchTerm = query.substring(0, inMatcher.start()).trim();
+            locationPart = inMatcher.group(1).trim();
+            
+            String stateId = STATE_NAMES.get(locationPart);
+            if (stateId != null && !searchTerm.isEmpty()) {
+                return new LocationParseResult(searchTerm, stateId);
+            }
+        }
+        
+        // Try matching state names at the end of the query
+        // Start with longer state names (e.g., "new york" before "york")
+        String[] words = query.split("\\s+");
+        if (words.length < 2) {
+            return null; // Need at least a search term and a location
+        }
+        
+        // Try 3-word state names (e.g., "district of columbia")
+        if (words.length >= 4) {
+            String threeWordLocation = words[words.length - 3] + " " + 
+                                       words[words.length - 2] + " " + 
+                                       words[words.length - 1];
+            String stateId = STATE_NAMES.get(threeWordLocation);
+            if (stateId != null) {
+                searchTerm = joinWords(words, 0, words.length - 3);
+                if (!searchTerm.isEmpty()) {
+                    return new LocationParseResult(searchTerm, stateId);
+                }
+            }
+        }
+        
+        // Try 2-word state names (e.g., "new york", "north carolina")
+        if (words.length >= 3) {
+            String twoWordLocation = words[words.length - 2] + " " + words[words.length - 1];
+            String stateId = STATE_NAMES.get(twoWordLocation);
+            if (stateId != null) {
+                searchTerm = joinWords(words, 0, words.length - 2);
+                if (!searchTerm.isEmpty()) {
+                    return new LocationParseResult(searchTerm, stateId);
+                }
+            }
+        }
+        
+        // Try 1-word state names (e.g., "arkansas", "texas", "va")
+        String oneWordLocation = words[words.length - 1];
+        String stateId = STATE_NAMES.get(oneWordLocation);
+        if (stateId != null) {
+            searchTerm = joinWords(words, 0, words.length - 1);
+            if (!searchTerm.isEmpty()) {
+                return new LocationParseResult(searchTerm, stateId);
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Join words from start to end index.
+     */
+    private static String joinWords(String[] words, int start, int end) {
+        if (start >= end || start < 0 || end > words.length) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = start; i < end; i++) {
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(words[i]);
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * Try to match a search term to a POI category.
+     */
+    private static PointOfInterestType matchCategoryFromTerm(String term) {
+        if (term == null || term.isEmpty()) {
+            return null;
+        }
+        
+        // Try exact match
+        PointOfInterestType exact = ALIASES.get(term);
+        if (exact != null) {
+            return exact;
+        }
+        
+        // Try partial match
+        for (Map.Entry<String, PointOfInterestType> entry : ALIASES.entrySet()) {
+            String alias = entry.getKey();
+            if (term.equals(alias) || 
+                term.startsWith(alias + " ") ||
+                term.endsWith(" " + alias) ||
+                term.contains(" " + alias + " ")) {
+                return entry.getValue();
+            }
+        }
+        
+        // Try fuzzy match
+        return findFuzzyMatch(term);
+    }
+    
+    /**
+     * Check if a state ID corresponds to a downloaded database.
+     * This is a static helper - actual database checking should be done by the caller.
+     */
+    public static String normalizeStateId(String input) {
+        if (input == null) return null;
+        String stateId = STATE_NAMES.get(input.toLowerCase(Locale.ROOT).trim());
+        return stateId;
+    }
+    
+    /**
+     * Get the display name for a state ID.
+     */
+    public static String getStateDisplayName(String stateId) {
+        if (stateId == null) return "";
+        // Convert database ID to display name: "new-york" -> "New York"
+        return stateId.replace('-', ' ')
+                .replaceAll("(^|\\s)(\\w)", new java.util.function.Function<java.util.regex.MatchResult, String>() {
+                    @Override
+                    public String apply(java.util.regex.MatchResult m) {
+                        return m.group().toUpperCase();
+                    }
+                }.toString());
+    }
+    
+    /**
+     * Get a nicely formatted state display name.
+     */
+    public static String formatStateDisplayName(String stateId) {
+        if (stateId == null) return "";
+        String[] parts = stateId.split("-");
+        StringBuilder sb = new StringBuilder();
+        for (String part : parts) {
+            if (sb.length() > 0) sb.append(" ");
+            if (!part.isEmpty()) {
+                sb.append(Character.toUpperCase(part.charAt(0)));
+                if (part.length() > 1) {
+                    sb.append(part.substring(1));
+                }
+            }
+        }
+        return sb.toString();
     }
     
     /**

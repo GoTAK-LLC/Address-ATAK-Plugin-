@@ -90,33 +90,33 @@
 
     </LinearLayout>
 
-    <!-- Action buttons - smaller -->
+    <!-- Action buttons - match Address search style -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingStart="4dp">
 
-        <!-- Navigate button -->
-        <ImageButton
-            android:id="@+id/nearby_navigate_button"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:src="@drawable/ic_navigation"
-            android:contentDescription="@string/navigate_to_poi"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:padding="4dp"
-            android:scaleType="fitCenter" />
-
-        <!-- Drop marker button -->
+        <!-- Drop marker button (first, like Address search) -->
         <ImageButton
             android:id="@+id/nearby_marker_button"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:src="@drawable/ic_marker"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_location_pin"
             android:contentDescription="@string/drop_marker_at_poi"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:padding="4dp"
+            android:padding="6dp"
+            android:scaleType="fitCenter" />
+
+        <!-- Navigate button (second, like Address search) -->
+        <ImageButton
+            android:id="@+id/nearby_navigate_button"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_navigate"
+            android:contentDescription="@string/navigate_to_poi"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="6dp"
             android:scaleType="fitCenter" />
 
     </LinearLayout>

@@ -1,6 +1,7 @@
 package com.gotak.address.search;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gotak.address.plugin.R;
+import com.gotak.address.search.nearby.IconsetHelper;
+import com.gotak.address.search.nearby.PointOfInterestType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     private final List<NominatimSearchResult> items = new ArrayList<>();
     private final HistoryItemListener listener;
     private final Context context;
+    private final IconsetHelper iconsetHelper;
 
     /**
      * Interface for handling history item interactions.
@@ -38,6 +42,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public HistoryAdapter(Context context, HistoryItemListener listener) {
         this.context = context;
         this.listener = listener;
+        this.iconsetHelper = new IconsetHelper(context);
     }
 
     /**
@@ -70,7 +75,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         NominatimSearchResult item = items.get(position);
-        holder.bind(item, listener);
+        holder.bind(item, listener, iconsetHelper);
     }
 
     @Override
@@ -101,13 +106,28 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             removeButton = itemView.findViewById(R.id.history_remove);
         }
 
-        void bind(NominatimSearchResult item, HistoryItemListener listener) {
+        void bind(NominatimSearchResult item, HistoryItemListener listener, IconsetHelper iconHelper) {
             nameText.setText(item.getName());
             addressText.setText(item.getDisplayName());
 
-            // Set icon based on location type
-            LocationType locationType = LocationType.fromResult(item);
-            iconView.setImageResource(locationType.getIconRes());
+            // Try to get POI icon first (for POI search results that were saved to history)
+            Drawable poiIcon = null;
+            String type = item.getType();
+            if (type != null && iconHelper != null) {
+                PointOfInterestType poiType = mapTypeToPoiType(type);
+                if (poiType != null) {
+                    poiIcon = iconHelper.getIconDrawable(poiType);
+                }
+            }
+            
+            if (poiIcon != null) {
+                // Use POI-specific icon (same as Nearby tab)
+                iconView.setImageDrawable(poiIcon);
+            } else {
+                // Fall back to location type icon (city, country, etc.)
+                LocationType locationType = LocationType.fromResult(item);
+                iconView.setImageResource(locationType.getIconRes());
+            }
 
             clickableArea.setOnClickListener(v -> {
                 if (listener != null) {
@@ -132,6 +152,85 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                     listener.onHistoryItemRemove(item);
                 }
             });
+        }
+        
+        /**
+         * Try to map a type string to a PointOfInterestType enum.
+         */
+        private PointOfInterestType mapTypeToPoiType(String type) {
+            if (type == null) return null;
+            
+            String typeLower = type.toLowerCase().replace(" ", "_");
+            
+            // Try direct enum match first
+            try {
+                return PointOfInterestType.valueOf(typeLower.toUpperCase());
+            } catch (IllegalArgumentException ignored) {}
+            
+            // Map common type strings to POI types
+            switch (typeLower) {
+                case "fuel":
+                    return PointOfInterestType.GAS_STATION;
+                case "hospital":
+                    return PointOfInterestType.HOSPITAL;
+                case "pharmacy":
+                    return PointOfInterestType.PHARMACY;
+                case "police":
+                    return PointOfInterestType.POLICE_STATION;
+                case "fire_station":
+                    return PointOfInterestType.FIRE_STATION;
+                case "bank":
+                    return PointOfInterestType.BANK;
+                case "atm":
+                    return PointOfInterestType.ATM;
+                case "restaurant":
+                    return PointOfInterestType.RESTAURANT;
+                case "cafe":
+                    return PointOfInterestType.CAFE;
+                case "fast_food":
+                    return PointOfInterestType.FAST_FOOD;
+                case "bar":
+                    return PointOfInterestType.BAR;
+                case "pub":
+                    return PointOfInterestType.PUB;
+                case "hotel":
+                    return PointOfInterestType.HOTEL;
+                case "supermarket":
+                    return PointOfInterestType.SUPERMARKET;
+                case "convenience":
+                    return PointOfInterestType.CONVENIENCE_STORE;
+                case "parking":
+                    return PointOfInterestType.PARKING;
+                case "school":
+                    return PointOfInterestType.SCHOOL;
+                case "library":
+                    return PointOfInterestType.LIBRARY;
+                case "cinema":
+                    return PointOfInterestType.CINEMA;
+                case "place_of_worship":
+                case "church":
+                    return PointOfInterestType.PLACE_OF_WORSHIP;
+                case "dentist":
+                    return PointOfInterestType.DENTIST;
+                case "doctors":
+                case "doctor":
+                    return PointOfInterestType.DOCTOR;
+                case "clinic":
+                    return PointOfInterestType.CLINIC;
+                case "veterinary":
+                case "vet":
+                    return PointOfInterestType.VETERINARIAN;
+                case "post_office":
+                    return PointOfInterestType.POST_OFFICE;
+                case "aerodrome":
+                case "airport":
+                    return PointOfInterestType.AIRPORT;
+                case "helipad":
+                case "heliport":
+                    return PointOfInterestType.HELIPORT;
+                default:
+                    return null;
+            }
         }
     }
 }

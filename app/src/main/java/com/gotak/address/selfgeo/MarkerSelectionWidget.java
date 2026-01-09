@@ -52,7 +52,8 @@ public class MarkerSelectionWidget extends AbstractWidgetMapComponent
     // Widget positioning - one size up to match marker coords
     private static final int FONT_SIZE = 3;  // Match marker coord text size
     private static final float HORIZONTAL_MARGIN = 16f;
-    private static final float VERTICAL_MARGIN = 8f;
+    private static final float TOP_MARGIN = 24f;    // Extra space from widget above
+    private static final float BOTTOM_MARGIN = 8f;
     
     // Colors (ARGB format)
     private static final int COLOR_WHITE = 0xFFFFFFFF;
@@ -114,8 +115,8 @@ public class MarkerSelectionWidget extends AbstractWidgetMapComponent
             if (layout != null) {
                 addressWidget = new TextWidget("", FONT_SIZE);
                 addressWidget.setName("MarkerSelectionAddressWidget");
-                // Right margin to align with other top-right elements
-                addressWidget.setMargins(0f, VERTICAL_MARGIN, HORIZONTAL_MARGIN, VERTICAL_MARGIN);
+                // Margins: left, top, right, bottom - extra top margin for spacing from widget above
+                addressWidget.setMargins(0f, TOP_MARGIN, HORIZONTAL_MARGIN, BOTTOM_MARGIN);
                 addressWidget.addOnClickListener(this);
                 addressWidget.setVisible(false);
                 

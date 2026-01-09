@@ -465,8 +465,8 @@ public class AddressSearchDropDown extends DropDownReceiver implements
     }
 
     private void updateLocationToggle() {
-        // Update segmented toggle appearance - use orange (#FF9800) for selected
-        int selectedColor = Color.parseColor("#FF9800"); // Orange
+        // Update segmented toggle appearance - use green (#4CAF50) for selected (matches nav icon)
+        int selectedColor = Color.parseColor("#4CAF50"); // Green
         int unselectedTextColor = Color.parseColor("#888888");
         
         if (useMapCenter) {
@@ -925,7 +925,7 @@ public class AddressSearchDropDown extends DropDownReceiver implements
         Log.i(TAG, "Navigating to POI: " + result.getDisplayName());
         GeoPoint point = new GeoPoint(result.getLatitude(), result.getLongitude());
         getMapView().getMapController().panTo(point, true);
-        getMapView().getMapController().zoomTo(17.0, true);
+        getMapView().getMapController().zoomTo(13.0, true);
     }
 
     private void startBloodhoundNavigationToPoi(OverpassSearchResult result) {
@@ -1142,12 +1142,24 @@ public class AddressSearchDropDown extends DropDownReceiver implements
 
     // Default radius for category search (km)
     private static final int CATEGORY_SEARCH_RADIUS_KM = 10;
+    
+    // Maximum results for location-specific searches
+    private static final int LOCATION_SEARCH_LIMIT = 50;
 
     private void performSearch(String query) {
         Log.i(TAG, "Searching for: " + query);
         
-        // Check if this is a category/POI search (e.g., "gas station near me")
+        // Check if this is a category/POI search (e.g., "gas station near me", "gas arkansas")
         CategoryMatcher.MatchResult categoryMatch = CategoryMatcher.detectCategory(query);
+        
+        // Check if this is a location-specific query (e.g., "gas arkansas", "walmart texas")
+        if (categoryMatch.hasLocation()) {
+            Log.i(TAG, "Detected location-specific query: term='" + categoryMatch.getSearchTerm() + 
+                       "', state=" + categoryMatch.getStateId() + 
+                       ", category=" + (categoryMatch.hasMatch() ? categoryMatch.getCategory().name() : "none"));
+            performLocationSearch(categoryMatch);
+            return;
+        }
         
         if (categoryMatch.hasMatch()) {
             // It's a POI category search - perform nearby search
@@ -1180,6 +1192,204 @@ public class AddressSearchDropDown extends DropDownReceiver implements
                 showError(errorMessage);
             }
         });
+    }
+    
+    /**
+     * Perform a location-specific search.
+     * Handles queries like "gas arkansas", "walmart texas", "hospitals in virginia".
+     */
+    private void performLocationSearch(CategoryMatcher.MatchResult match) {
+        String stateId = match.getStateId();
+        String searchTerm = match.getSearchTerm();
+        String stateDisplayName = CategoryMatcher.formatStateDisplayName(stateId);
+        
+        // Check if the state database is downloaded
+        OfflineAddressDatabase offlineDb = apiClient.getOfflineDatabase();
+        if (offlineDb == null || !offlineDb.isStateDownloaded(stateId)) {
+            // State not downloaded - show helpful message and fall back to online search
+            Log.i(TAG, "State database not downloaded: " + stateId + ", falling back to online search");
+            showSearching();
+            String onlineQuery = searchTerm + " " + stateDisplayName;
+            
+            // Try online search
+            apiClient.search(onlineQuery, new NominatimApiClient.SearchCallback() {
+                @Override
+                public void onSuccess(List<NominatimSearchResult> results) {
+                    Log.i(TAG, "Online location search got " + results.size() + " results");
+                    showResults(results);
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    Log.e(TAG, "Online search error: " + errorMessage);
+                    // Show error with hint to download offline data
+                    String hint = errorMessage + "\n\nTip: Download " + stateDisplayName + 
+                                  " offline data for faster, offline-capable search.";
+                    showError(hint);
+                }
+            });
+            return;
+        }
+        
+        // State is downloaded - search offline
+        showSearching();
+        String searchingMsg = pluginContext.getString(R.string.searching) + " " + stateDisplayName + "...";
+        searchStatus.setText(searchingMsg);
+        
+        // Extract any city/location filter from the search term
+        // e.g., "gas norfolk" -> category="gas", locationFilter="norfolk"
+        final String locationFilter = extractLocationFilter(searchTerm, match.hasMatch() ? match.getCategory() : null);
+        
+        // Run search on background thread
+        new Thread(() -> {
+            List<NominatimSearchResult> results = new ArrayList<>();
+            
+            if (match.hasMatch()) {
+                // Category search (e.g., "gas arkansas", "gas norfolk virginia")
+                PointOfInterestType category = match.getCategory();
+                Set<PointOfInterestType> categories = new HashSet<>();
+                categories.add(category);
+                
+                List<OverpassSearchResult> poiResults = offlineDb.searchStatePOIsByCategory(
+                        stateId, categories, LOCATION_SEARCH_LIMIT);
+                
+                // Filter by location if specified (e.g., "norfolk" in "gas norfolk virginia")
+                if (locationFilter != null && !locationFilter.isEmpty()) {
+                    String filterLower = locationFilter.toLowerCase();
+                    List<OverpassSearchResult> filteredResults = new ArrayList<>();
+                    for (OverpassSearchResult poi : poiResults) {
+                        // Check if POI name or address contains the location filter
+                        String name = poi.getDisplayName() != null ? poi.getDisplayName().toLowerCase() : "";
+                        String address = poi.getAddress() != null ? poi.getAddress().toLowerCase() : "";
+                        if (name.contains(filterLower) || address.contains(filterLower)) {
+                            filteredResults.add(poi);
+                        }
+                    }
+                    poiResults = filteredResults;
+                    Log.i(TAG, "Filtered by '" + locationFilter + "': " + poiResults.size() + " results");
+                }
+                
+                // Convert POI results to NominatimSearchResult for display
+                for (OverpassSearchResult poi : poiResults) {
+                    String displayName = poi.getDisplayName();
+                    if (poi.getAddress() != null && !poi.getAddress().isEmpty()) {
+                        displayName += ", " + poi.getAddress();
+                    }
+                    displayName += ", " + stateDisplayName;
+                    
+                    results.add(new NominatimSearchResult(
+                            poi.getOsmId(),
+                            poi.getLatitude(),
+                            poi.getLongitude(),
+                            displayName,
+                            poi.getDisplayName(),
+                            CategoryMatcher.getCategoryDisplayName(category).toLowerCase(),
+                            poi.getOsmType(),
+                            poi.getOsmId()
+                    ));
+                }
+                
+                Log.i(TAG, "Offline category search for " + category.name() + " in " + stateId + 
+                          (locationFilter != null ? " near " + locationFilter : "") +
+                          " found " + results.size() + " results");
+            } else {
+                // Name search (e.g., "walmart arkansas") - search by name in places and POIs
+                results = offlineDb.searchStateByName(stateId, searchTerm);
+                Log.i(TAG, "Offline name search for '" + searchTerm + "' in " + stateId + 
+                          " found " + results.size() + " results");
+            }
+            
+            final List<NominatimSearchResult> finalResults = results;
+            
+            // Show results on UI thread
+            mainHandler.post(() -> {
+                if (finalResults.isEmpty()) {
+                    String categoryName = match.hasMatch() ? 
+                            CategoryMatcher.getCategoryDisplayName(match.getCategory()) : searchTerm;
+                    String noResultsMsg = "No " + categoryName + " found in " + stateDisplayName;
+                    searchStatus.setText(noResultsMsg);
+                    searchStatus.setVisibility(View.VISIBLE);
+                    sectionHeader.setVisibility(View.GONE);
+                    resultsRecyclerView.setVisibility(View.GONE);
+                    historyContainer.setVisibility(View.GONE);
+                } else {
+                    showResults(finalResults);
+                }
+            });
+        }, "LocationSearchThread").start();
+    }
+    
+    /**
+     * Extract the location/city filter from a search term after removing the category keyword.
+     * e.g., "gas norfolk" with category GAS_STATION -> "norfolk"
+     *       "hospital richmond" with category HOSPITAL -> "richmond"
+     *       "gas" with category GAS_STATION -> null (no location filter)
+     */
+    private String extractLocationFilter(String searchTerm, PointOfInterestType category) {
+        if (searchTerm == null || searchTerm.isEmpty() || category == null) {
+            return null;
+        }
+        
+        String termLower = searchTerm.toLowerCase().trim();
+        
+        // Get category keywords to remove
+        String[] categoryKeywords = getCategoryKeywords(category);
+        
+        // Remove category keywords from the search term
+        String remaining = termLower;
+        for (String keyword : categoryKeywords) {
+            // Remove keyword if it's at the start
+            if (remaining.startsWith(keyword + " ")) {
+                remaining = remaining.substring(keyword.length()).trim();
+                break;
+            }
+            // Remove keyword if it's the entire term
+            if (remaining.equals(keyword)) {
+                return null;
+            }
+        }
+        
+        // If there's remaining text, that's our location filter
+        if (!remaining.isEmpty() && !remaining.equals(termLower)) {
+            return remaining;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Get common keywords for a POI category.
+     */
+    private String[] getCategoryKeywords(PointOfInterestType category) {
+        switch (category) {
+            case GAS_STATION:
+                return new String[]{"gas station", "gas stations", "gas", "fuel", "petrol"};
+            case HOSPITAL:
+                return new String[]{"hospital", "hospitals", "er", "emergency room"};
+            case PHARMACY:
+                return new String[]{"pharmacy", "pharmacies", "drugstore", "drug store"};
+            case POLICE_STATION:
+                return new String[]{"police station", "police", "cops", "sheriff"};
+            case FIRE_STATION:
+                return new String[]{"fire station", "fire department", "firehouse"};
+            case RESTAURANT:
+                return new String[]{"restaurant", "restaurants", "food", "dining"};
+            case CAFE:
+                return new String[]{"cafe", "cafes", "coffee", "coffee shop"};
+            case HOTEL:
+                return new String[]{"hotel", "hotels", "motel", "lodging"};
+            case BANK:
+                return new String[]{"bank", "banks"};
+            case ATM:
+                return new String[]{"atm", "atms", "cash machine"};
+            case SUPERMARKET:
+                return new String[]{"supermarket", "supermarkets", "grocery", "grocery store"};
+            case AIRPORT:
+                return new String[]{"airport", "airports", "airfield"};
+            default:
+                // Use the category name as keyword
+                return new String[]{category.name().toLowerCase().replace("_", " ")};
+        }
     }
     
     /**

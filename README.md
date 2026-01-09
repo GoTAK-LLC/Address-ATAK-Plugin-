@@ -15,95 +15,95 @@
 
 The Address Plugin extends ATAK with powerful geocoding and POI search capabilities for both online and offline operations. Search addresses, find nearby points of interest, drop tactical markers, and navigate—all with or without internet connectivity.
 
-## ✨ Key Features
+## Key Features
 
-### 🔍 Address Search
+### Address Search
 - **Fuzzy text search** - Find addresses even with typos or partial matches
 - **Online search** via Nominatim/Photon APIs
 - **Offline search** with downloadable regional databases (FTS5 full-text search)
 - Search history with quick access to recent locations
 - Location type icons (city, building, road, etc.)
 
-### 📍 Nearby POI Search
+### Nearby POI Search
 Find points of interest near your location or any map position:
 
 | Category | POI Types |
 |----------|-----------|
-| 🏥 **Medical** | Hospitals, Pharmacies, Clinics, Dentists |
-| 🚨 **Emergency** | Fire Stations, Police Stations |
-| ✈️ **Transport** | Airports, Heliports, Railway Stations, Ferries |
-| ⛽ **Services** | Gas Stations, Banks, ATMs, Post Offices |
-| 🏛️ **Government** | Embassies, Government Buildings, Prisons |
-| 📡 **Infrastructure** | Comm Towers, Cell Towers, Power Stations |
-| 🍽️ **Food & Lodging** | Restaurants, Hotels, Cafes, Bars |
-| 🛒 **Shopping** | Supermarkets, Convenience Stores, Malls |
+| **Medical** | Hospitals, Pharmacies, Clinics, Dentists |
+| **Emergency** | Fire Stations, Police Stations |
+| **Transport** | Airports, Heliports, Railway Stations, Ferries |
+| **Services** | Gas Stations, Banks, ATMs, Post Offices |
+| **Government** | Embassies, Government Buildings, Prisons |
+| **Infrastructure** | Comm Towers, Cell Towers, Power Stations |
+| **Food & Lodging** | Restaurants, Hotels, Cafes, Bars |
+| **Shopping** | Supermarkets, Convenience Stores, Malls |
 
 - **Radius search** - 1km to 50km range
 - **Works offline** with R*Tree spatial indexing
 - **Distance display** to each POI
 
-### 🎯 Marker Placement & CoT Dispatch
+### Marker Placement & CoT Dispatch
 - Drop markers directly from search results
 - **Markers broadcast as CoT** to all connected TAK devices
 - **MIL-STD-2525 affiliation selection**:
-  - 🔵 **Friendly** (Blue)
-  - 🔴 **Hostile** (Red)
-  - 🟢 **Neutral** (Green)
-  - 🟡 **Unknown** (Yellow)
+  - **Friendly** (Blue)
+  - **Hostile** (Red)
+  - **Neutral** (Green)
+  - **Unknown** (Yellow)
 - Address included in marker remarks
 
-### 🧭 Bloodhound Navigation
+### Bloodhound Navigation
 - Navigate to any search result or POI
 - Automatic marker placement at destination
 - Supports VNS (Vehicle Navigation System) integration
 - Works with ATAK's turn-by-turn navigation
 
-### 🏠 Self-Location Widget
+### Self-Location Widget
 - Shows your current street address on the map
 - Updates automatically as you move (50ft threshold)
 - Caches addresses across app restarts
 - Single-tap to refresh, double-tap for settings
 
-### 🗺️ Map Center Geocoding
+### Map Center Geocoding
 - Shows address for map center crosshairs
 - Active when ATAK's "Designate Map Centre" is enabled
 - Yellow text display in bottom-left corner
 
-### 📌 Marker Selection Address
+### Marker Selection Address
 - Tap any marker to see its geocoded address
 - Displays in top-right corner in white text
 - Shows street address, city, region, and country code
 - Auto-hides after 10 seconds
 
-## 📴 Offline Databases
+## Offline Databases
 
 Download pre-built databases for offline operation—no internet required after download.
 
 ### Available Regions
 
-- **🇺🇸 All 50 US States**
-- **🇪🇺 European Countries** - Germany, France, Spain, UK, Italy, etc.
-- **🌏 Asian Countries** - Japan, South Korea, Taiwan, Philippines, etc.
-- **🌎 Americas** - Canada, Mexico, Brazil, Argentina, etc.
-- **🌍 Africa & Middle East** - Egypt, South Africa, Israel, Iraq, etc.
-- **🏝️ Oceania** - Australia, New Zealand
+- **All 50 US States**
+- **European Countries** - Germany, France, Spain, UK, Italy, etc.
+- **Asian Countries** - Japan, South Korea, Taiwan, Philippines, etc.
+- **Americas** - Canada, Mexico, Brazil, Argentina, etc.
+- **Africa & Middle East** - Egypt, South Africa, Israel, Iraq, etc.
+- **Oceania** - Australia, New Zealand
 
 ### Download Pre-Built Databases
 
 Ready-to-use databases are available at:
-**[📦 Download Databases](https://github.com/GoTAK-LLC/Address-ATAK-Plugin/releases/tag/databases)**
+**[Download Databases](https://github.com/GoTAK-LLC/Address-ATAK-Plugin/releases/tag/databases)**
 
 Or download directly from within the plugin:
 1. Open Address Plugin → **Offline Data**
 2. Select your region
 3. Tap **Download**
 
-### 🆕 Request a New Region
+### Request a New Region
 
 Anyone can request a database build via GitHub Issues:
 
 1. Go to [Create New Issue](https://github.com/GoTAK-LLC/Address-ATAK-Plugin/issues/new/choose)
-2. Select **"🗺️ Request Database Build"**
+2. Select **"Request Database Build"**
 3. Set the title to `Build: your-region` (e.g., `Build: europe/france`)
 4. Submit—the build starts automatically!
 5. You'll be notified when it's ready to download
@@ -114,7 +114,7 @@ Anyone can request a database build via GitHub Issues:
 - `Build: asia/japan`
 - `Build: africa/egypt`
 
-## 🔧 Usage
+## Usage
 
 ### Address Search
 1. Tap the search widget icon on the map
@@ -130,16 +130,16 @@ Anyone can request a database build via GitHub Issues:
 5. Tap **Search** to find nearby POIs
 
 ### Dropping Markers
-1. Tap the 📍 pin icon on any search result
+1. Tap the pin icon on any search result
 2. Select marker affiliation (Friendly/Hostile/Neutral/Unknown)
 3. Marker is placed and **broadcast to all connected TAK devices**
 
 ### Navigation
-1. Tap the ➡️ navigate icon on any result
+1. Tap the navigate icon on any result
 2. A marker is dropped at the destination
 3. Bloodhound activates for navigation
 
-## ⚙️ Settings
+## Settings
 
 Access via: **ATAK Settings → Tool Preferences → Address Settings**
 
@@ -152,7 +152,7 @@ Access via: **ATAK Settings → Tool Preferences → Address Settings**
 | **Show Marker Address** | Display geocoded address when tapping markers |
 | **Save Search History** | Remember recent searches |
 
-## 🛠️ Building Databases Locally
+## Building Databases Locally
 
 For advanced users who want to build custom databases:
 
@@ -198,24 +198,24 @@ Each database contains:
 - **POIs** - Categorized points of interest for spatial search (R*Tree indexed)
 - **Metadata** - Region info, place counts, creation date
 
-## 📋 Requirements
+## Requirements
 
 - ATAK 4.5.0 or later
 - Internet connectivity for online search
 - Downloaded databases for offline operation
 
-## 📥 Downloads
+## Downloads
 
 TPC-signed releases are available at **[getgotak.com/activate](https://getgotak.com/activate)**. All production builds are digitally signed and verified for use with ATAK.
 
-## 🔒 Privacy
+## Privacy
 
 - **Self-location geocoding** - Uses ATAK's built-in geocoder by default
 - **Photon API fallback** - Optional, sends coordinates to photon.komoot.io
 - **Offline mode** - No data transmitted when using downloaded databases
 - **Nearby search** - Uses Overpass API online, or local database offline
 
-## 📄 License
+## License
 
 Copyright © GoTAK LLC. All rights reserved.
 
