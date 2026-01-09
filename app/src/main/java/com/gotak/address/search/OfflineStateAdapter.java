@@ -112,8 +112,10 @@ public class OfflineStateAdapter extends RecyclerView.Adapter<OfflineStateAdapte
             stateInfo.setText(info.toString());
 
             // Update UI based on downloaded state
+            // Always hide the downloaded icon (use text indicator instead)
+            downloadedIcon.setVisibility(View.GONE);
+            
             if (state.downloaded) {
-                downloadedIcon.setVisibility(View.VISIBLE);
                 actionButton.setText("Delete");
                 actionButton.setBackgroundResource(R.drawable.bg_button_delete);
                 actionButton.setOnClickListener(v -> {
@@ -122,7 +124,6 @@ public class OfflineStateAdapter extends RecyclerView.Adapter<OfflineStateAdapte
                     }
                 });
             } else {
-                downloadedIcon.setVisibility(View.GONE);
                 actionButton.setText("Download");
                 actionButton.setBackgroundResource(R.drawable.bg_button_download);
                 actionButton.setOnClickListener(v -> {
