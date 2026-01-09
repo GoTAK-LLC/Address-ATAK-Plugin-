@@ -38,6 +38,15 @@ public class OfflineStateAdapter extends RecyclerView.Adapter<OfflineStateAdapte
     public void setStates(List<OfflineDataManager.StateInfo> newStates) {
         states.clear();
         states.addAll(newStates);
+        
+        // Sort: downloaded items first, then alphabetically by name
+        states.sort((a, b) -> {
+            if (a.downloaded != b.downloaded) {
+                return a.downloaded ? -1 : 1;  // Downloaded first
+            }
+            return a.name.compareToIgnoreCase(b.name);
+        });
+        
         notifyDataSetChanged();
     }
 
@@ -87,20 +96,34 @@ public class OfflineStateAdapter extends RecyclerView.Adapter<OfflineStateAdapte
         }
 
         void bind(OfflineDataManager.StateInfo state) {
+            // Show full name only (no abbreviation clutter)
             stateName.setText(state.name);
-            stateAbbrev.setText("(" + state.abbrev + ")");
+            
+            // Only show abbreviation if it's meaningful (not empty, not same as name)
+            if (state.abbrev != null && !state.abbrev.isEmpty() && 
+                !state.abbrev.equalsIgnoreCase(state.name)) {
+                stateAbbrev.setText("(" + state.abbrev + ")");
+                stateAbbrev.setVisibility(View.VISIBLE);
+            } else {
+                stateAbbrev.setVisibility(View.GONE);
+            }
             
             // Show size and place count
-            String info = state.getSizeFormatted();
-            if (state.placeCount > 0) {
-                info += " • " + state.getPlaceCountFormatted();
+            StringBuilder info = new StringBuilder();
+            if (state.downloaded) {
+                info.append("✓ DOWNLOADED • ");
             }
-            stateInfo.setText(info);
+            info.append(state.getSizeFormatted());
+            if (state.placeCount > 0) {
+                info.append(" • ").append(state.getPlaceCountFormatted());
+            }
+            stateInfo.setText(info.toString());
 
             // Update UI based on downloaded state
             if (state.downloaded) {
                 downloadedIcon.setVisibility(View.VISIBLE);
                 actionButton.setText("Delete");
+                actionButton.setBackgroundColor(0xFFD32F2F); // Red for delete
                 actionButton.setOnClickListener(v -> {
                     if (listener != null) {
                         listener.onDelete(state);
@@ -109,6 +132,7 @@ public class OfflineStateAdapter extends RecyclerView.Adapter<OfflineStateAdapte
             } else {
                 downloadedIcon.setVisibility(View.GONE);
                 actionButton.setText("Download");
+                actionButton.setBackgroundColor(0xFF4CAF50); // Green for download
                 actionButton.setOnClickListener(v -> {
                     if (listener != null) {
                         listener.onDownload(state);
