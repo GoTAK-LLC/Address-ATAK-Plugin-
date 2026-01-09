@@ -69,6 +69,12 @@ Find points of interest near your location or any map position:
 - Active when ATAK's "Designate Map Centre" is enabled
 - Yellow text display in bottom-left corner
 
+### 📌 Marker Selection Address
+- Tap any marker to see its geocoded address
+- Displays in top-right corner in white text
+- Shows street address, city, region, and country code
+- Auto-hides after 10 seconds
+
 ## 📴 Offline Databases
 
 Download pre-built databases for offline operation—no internet required after download.
@@ -143,6 +149,7 @@ Access via: **ATAK Settings → Tool Preferences → Address Settings**
 | **Refresh Period** | How often to update address (seconds) |
 | **Enable Photon API Fallback** | Use external API when ATAK geocoder fails |
 | **Show Crosshairs Address** | Display address for map center |
+| **Show Marker Address** | Display geocoded address when tapping markers |
 | **Save Search History** | Remember recent searches |
 
 ## 🛠️ Building Databases Locally

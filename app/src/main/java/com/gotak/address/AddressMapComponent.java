@@ -36,6 +36,9 @@ public class AddressMapComponent extends DropDownMapComponent {
     
     // Map center crosshairs geocoding widget
     private com.gotak.address.selfgeo.MapCenterWidget mapCenterWidget;
+    
+    // Marker selection geocoding widget (top right)
+    private com.gotak.address.selfgeo.MarkerSelectionWidget markerSelectionWidget;
 
     @Override
     public void onCreate(final Context context, Intent intent,
@@ -90,6 +93,10 @@ public class AddressMapComponent extends DropDownMapComponent {
             mapCenterWidget = new com.gotak.address.selfgeo.MapCenterWidget();
             mapCenterWidget.onCreate(pluginContext, intent, view);
             
+            // Create the marker selection widget (shows address for tapped markers)
+            markerSelectionWidget = new com.gotak.address.selfgeo.MarkerSelectionWidget();
+            markerSelectionWidget.onCreate(pluginContext, intent, view);
+            
             Log.d(TAG, "Address search components initialized");
         } catch (Exception e) {
             Log.e(TAG, "Failed to initialize address search components: " + e.getMessage(), e);
@@ -124,6 +131,10 @@ public class AddressMapComponent extends DropDownMapComponent {
             if (mapCenterWidget != null) {
                 mapCenterWidget.dispose();
                 mapCenterWidget = null;
+            }
+            if (markerSelectionWidget != null) {
+                markerSelectionWidget.dispose();
+                markerSelectionWidget = null;
             }
         } catch (Exception e) {
             Log.e(TAG, "Error cleaning up address search components: " + e.getMessage(), e);

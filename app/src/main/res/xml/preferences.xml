@@ -46,6 +46,24 @@
         android:defaultValue="false"
         android:dependency="address_show_map_center" />
 
+    <!-- Marker Selection Geocoding -->
+    <PreferenceCategory
+        android:key="category_marker_selection"
+        android:title="Marker Selection Address" />
+
+    <com.atakmap.android.gui.PanCheckBoxPreference
+        android:key="address_show_marker_selection"
+        android:title="Show Marker Address"
+        android:summary="Display geocoded address in top-right when tapping a marker"
+        android:defaultValue="true" />
+
+    <com.atakmap.android.gui.PanCheckBoxPreference
+        android:key="address_marker_photon_fallback"
+        android:title="Enable Photon API Fallback"
+        android:summary="Use external Photon API when ATAK geocoder fails for marker selection"
+        android:defaultValue="false"
+        android:dependency="address_show_marker_selection" />
+
     <!-- Nearby POI Settings -->
     <PreferenceCategory
         android:key="category_nearby"

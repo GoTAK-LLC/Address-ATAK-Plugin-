@@ -401,7 +401,7 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
     
     /**
      * Format an Android Address object for display.
-     * Extracts street address with house number like the Kotlin code does.
+     * Two-line format: Street on first line, Town/City, Region on second line.
      */
     private String formatAddressFromAndroid(Address address) {
         if (address == null) {
@@ -410,48 +410,22 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
         
         StringBuilder sb = new StringBuilder();
         
-        // First try to get address lines (most complete)
-        String line0 = address.getAddressLine(0);
-        if (line0 != null && !line0.isEmpty()) {
-            // Parse the address line - it typically contains "123 Street Name, City, State, Country"
-            String[] parts = line0.split(",");
-            
-            // Take first part (street address with number)
-            if (parts.length > 0) {
-                sb.append(parts[0].trim());
-            }
-            
-            // Add city if available (usually second part)
-            if (parts.length > 1) {
-                sb.append("\n").append(parts[1].trim());
-            }
-            
-            // Add state/country in compact form
-            if (parts.length > 2) {
-                String lastPart = parts[parts.length - 1].trim();
-                String countryCode = getCountryCode(lastPart);
-                if (parts.length > 3) {
-                    // Has state and country
-                    String state = parts[parts.length - 2].trim();
-                    sb.append("\n").append(state).append(", ").append(countryCode);
-                } else {
-                    sb.append("\n").append(countryCode);
-                }
-            }
-            
-            return sb.toString();
-        }
-        
-        // Fallback: Build from individual components
-        // Get street number + street name
+        // Get individual components first - more reliable than parsing addressLine
         String subThoroughfare = address.getSubThoroughfare(); // House number
-        String thoroughfare = address.getThoroughfare(); // Street name
-        String featureName = address.getFeatureName(); // POI name or number
+        String thoroughfare = address.getThoroughfare();       // Street name
+        String featureName = address.getFeatureName();         // POI name or number
+        String locality = address.getLocality();               // City/Town (e.g., Aranjuez)
+        String subLocality = address.getSubLocality();         // District/neighborhood
+        String adminArea = address.getAdminArea();             // State/Region (e.g., Madrid)
+        String countryCode = address.getCountryCode();
         
-        Log.d(TAG, "Address components - subThoroughfare: " + subThoroughfare + 
-                   ", thoroughfare: " + thoroughfare + ", featureName: " + featureName);
+        Log.d(TAG, "Address components - thoroughfare: " + thoroughfare + 
+                   ", subThoroughfare: " + subThoroughfare +
+                   ", locality: " + locality + 
+                   ", subLocality: " + subLocality +
+                   ", adminArea: " + adminArea);
         
-        // Build street address
+        // Line 1: Street address
         if (thoroughfare != null && !thoroughfare.isEmpty()) {
             if (subThoroughfare != null && !subThoroughfare.isEmpty()) {
                 sb.append(subThoroughfare).append(" ");
@@ -468,29 +442,46 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
             sb.append(thoroughfare);
         } else if (featureName != null && !featureName.isEmpty()) {
             sb.append(featureName);
-        }
-        
-        // Add city
-        String locality = address.getLocality();
-        if (locality != null && !locality.isEmpty()) {
-            if (sb.length() > 0) sb.append("\n");
-            sb.append(locality);
-        }
-        
-        // Add state/country
-        String adminArea = address.getAdminArea();
-        String countryCode = address.getCountryCode();
-        
-        if (adminArea != null || countryCode != null) {
-            if (sb.length() > 0) sb.append("\n");
-            if (adminArea != null && !adminArea.isEmpty()) {
-                sb.append(adminArea);
-                if (countryCode != null && !countryCode.isEmpty()) {
-                    sb.append(", ").append(countryCode);
+        } else {
+            // Fallback to first part of addressLine if no thoroughfare
+            String line0 = address.getAddressLine(0);
+            if (line0 != null && !line0.isEmpty()) {
+                String[] parts = line0.split(",");
+                if (parts.length > 0) {
+                    sb.append(parts[0].trim());
                 }
-            } else if (countryCode != null) {
-                sb.append(countryCode);
             }
+        }
+        
+        // Line 2: Town/City, Region, Country
+        StringBuilder line2 = new StringBuilder();
+        
+        // Add locality (town/city) - e.g., "Aranjuez"
+        if (locality != null && !locality.isEmpty()) {
+            line2.append(locality);
+        } else if (subLocality != null && !subLocality.isEmpty()) {
+            // Fallback to subLocality if no locality
+            line2.append(subLocality);
+        }
+        
+        // Add admin area (state/region) - e.g., "Madrid"
+        if (adminArea != null && !adminArea.isEmpty()) {
+            // Only add if different from locality
+            if (!adminArea.equalsIgnoreCase(locality)) {
+                if (line2.length() > 0) line2.append(", ");
+                line2.append(adminArea);
+            }
+        }
+        
+        // Add country code at the end - e.g., "ES"
+        if (countryCode != null && !countryCode.isEmpty()) {
+            if (line2.length() > 0) line2.append(", ");
+            line2.append(countryCode.toUpperCase());
+        }
+        
+        if (line2.length() > 0) {
+            if (sb.length() > 0) sb.append("\n");
+            sb.append(line2);
         }
         
         String result = sb.toString();
