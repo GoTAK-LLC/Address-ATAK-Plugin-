@@ -58,10 +58,18 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
     // Colors (ARGB format)
     private static final int COLOR_CYAN = 0xFF00FFFF;
     private static final int COLOR_RED = 0xFFFF4444;
+    private static final int COLOR_YELLOW = 0xFFFFFF00;
     
     // Minimum distance (in meters) before re-geocoding
     // 50 feet = 15.24 meters - only geocode when user moves significantly
     private static final double MIN_DISTANCE_FOR_GEOCODE = 15.24;
+    
+    // Map Center mode settings
+    // Delay before geocoding map center (allows user to finish zooming/panning)
+    private static final long MAP_CENTER_DEBOUNCE_DELAY_MS = 5000; // 5 seconds
+    // Maximum map scale for map center geocoding (in meters per pixel)
+    // ~500 m/px corresponds to roughly city-level zoom - skip geocoding if more zoomed out
+    private static final double MAX_MAP_SCALE_FOR_GEOCODE = 500.0;
     
     private MapView mapView;
     private Context pluginContext;
@@ -85,6 +93,13 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
     // Double-tap detection
     private static final long DOUBLE_TAP_TIMEOUT = 300; // milliseconds
     private long lastClickTime = 0;
+    
+    // Mode toggle: false = GPS location, true = Map Center location
+    private boolean isMapCenterMode = false;
+    
+    // Map center stability tracking - only geocode after map stops moving
+    private GeoPoint lastMapCenterPosition;
+    private long lastMapCenterChangeTime = 0;
     
     @Override
     protected void onCreateWidgets(Context context, android.content.Intent intent, MapView mapView) {
@@ -179,9 +194,19 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
             openPluginSettings();
             lastClickTime = 0; // Reset to prevent triple-tap
         } else {
-            // Single tap - refresh geocoding
-            Log.d(TAG, "Single tap - refreshing geocoding");
+            // Single tap - toggle between GPS and Map Center mode
+            isMapCenterMode = !isMapCenterMode;
+            Log.d(TAG, "Single tap - toggled to " + (isMapCenterMode ? "Map Center" : "GPS") + " mode");
             lastGeocodedPoint = null;
+            currentAddress = ""; // Clear to force widget update
+            
+            if (isMapCenterMode) {
+                // Reset stability tracking for fresh start
+                lastMapCenterPosition = null;
+                lastMapCenterChangeTime = 0;
+            }
+            
+            // Geocode immediately on mode switch
             performGeocoding();
         }
         
@@ -279,13 +304,65 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
             return;
         }
         
-        // Get self marker position
-        PointMapItem selfMarker = mapView.getSelfMarker();
-        if (selfMarker == null) {
-            return;
+        GeoPoint point;
+        int displayColor;
+        
+        if (isMapCenterMode) {
+            // Map Center mode - check zoom level first
+            double mapScale = mapView.getMapScale();
+            Log.d(TAG, "Map scale: " + mapScale + " m/px (max for geocode: " + MAX_MAP_SCALE_FOR_GEOCODE + ")");
+            
+            if (mapScale > MAX_MAP_SCALE_FOR_GEOCODE) {
+                // Too zoomed out - show message instead of geocoding
+                Log.d(TAG, "Map too zoomed out for geocoding, scale: " + mapScale);
+                updateWidget("Zoom in for address", COLOR_YELLOW);
+                return;
+            }
+            
+            // Map Center mode - get crosshairs position
+            point = mapView.getCenterPoint().get();
+            displayColor = COLOR_YELLOW;
+            
+            // Check map stability - only re-geocode if map has been stable
+            if (lastMapCenterPosition != null && point != null) {
+                double movedDistance = point.distanceTo(lastMapCenterPosition);
+                long now = System.currentTimeMillis();
+                
+                if (movedDistance > MIN_DISTANCE_FOR_GEOCODE) {
+                    // Map has moved - reset stability timer
+                    lastMapCenterPosition = point;
+                    lastMapCenterChangeTime = now;
+                    Log.d(TAG, "Map moved " + movedDistance + "m, waiting for stability...");
+                    // Don't show "waiting" message - just keep the current address displayed
+                    return;
+                }
+                
+                // Map hasn't moved much - check if stable long enough
+                long stableTime = now - lastMapCenterChangeTime;
+                if (stableTime < MAP_CENTER_DEBOUNCE_DELAY_MS) {
+                    Log.d(TAG, "Map stable for " + stableTime + "ms, need " + MAP_CENTER_DEBOUNCE_DELAY_MS + "ms");
+                    return;
+                }
+                
+                Log.d(TAG, "Map stable for " + stableTime + "ms, proceeding with geocode");
+            } else {
+                // First time - record position and proceed with geocode
+                lastMapCenterPosition = point;
+                lastMapCenterChangeTime = System.currentTimeMillis();
+            }
+            
+            Log.d(TAG, "Using Map Center mode");
+        } else {
+            // GPS mode - get self marker position
+            PointMapItem selfMarker = mapView.getSelfMarker();
+            if (selfMarker == null) {
+                return;
+            }
+            point = selfMarker.getPoint();
+            displayColor = COLOR_CYAN;
+            Log.d(TAG, "Using GPS mode");
         }
         
-        GeoPoint point = selfMarker.getPoint();
         if (point == null || !point.isValid()) {
             return;
         }
@@ -307,7 +384,7 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
         if (formattedAddress == null) {
             if (isPhotonFallbackEnabled()) {
                 Log.d(TAG, "ATAK geocoder failed, falling back to Photon API");
-                tryPhotonGeocoder(point);
+                tryPhotonGeocoder(point, displayColor);
                 return; // Photon is async, will update widget when done
             } else {
                 Log.d(TAG, "ATAK geocoder failed, Photon fallback disabled for privacy");
@@ -325,8 +402,11 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
         if (!formattedAddress.equals(currentAddress)) {
             Log.d(TAG, "Address changed, updating widget");
             currentAddress = formattedAddress;
-            saveCachedAddress(currentAddress, point);
-            updateWidget(currentAddress, COLOR_CYAN);
+            // Only cache GPS mode addresses (not map center)
+            if (!isMapCenterMode) {
+                saveCachedAddress(currentAddress, point);
+            }
+            updateWidget(currentAddress, displayColor);
         }
     }
     
@@ -373,7 +453,7 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
      * Fallback: Try to geocode using Photon API (free OpenStreetMap-based service).
      * This is async and will update the widget when complete.
      */
-    private void tryPhotonGeocoder(final GeoPoint point) {
+    private void tryPhotonGeocoder(final GeoPoint point, final int displayColor) {
         photonGeocoder.reverseGeocode(point.getLatitude(), point.getLongitude(),
                 new ReverseGeocoder.ReverseGeocodeCallback() {
             @Override
@@ -383,8 +463,11 @@ public class SelfLocationWidget extends AbstractWidgetMapComponent
                 
                 if (!address.equals(currentAddress)) {
                     currentAddress = address;
-                    saveCachedAddress(currentAddress, point);
-                    updateWidget(currentAddress, COLOR_CYAN);
+                    // Only cache GPS mode addresses (not map center)
+                    if (!isMapCenterMode) {
+                        saveCachedAddress(currentAddress, point);
+                    }
+                    updateWidget(currentAddress, displayColor);
                 }
             }
             

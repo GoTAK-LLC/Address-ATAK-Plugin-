@@ -66,6 +66,14 @@
       "filename": "new-york.db"
     },
     {
+      "id": "texas",
+      "name": "Texas",
+      "size": 414433280,
+      "place_count": 1712326,
+      "poi_count": 222282,
+      "filename": "texas.db"
+    },
+    {
       "id": "virginia",
       "name": "virginia",
       "size": 527151104,

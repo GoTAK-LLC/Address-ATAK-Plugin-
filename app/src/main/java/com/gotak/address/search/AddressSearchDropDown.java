@@ -756,6 +756,11 @@ public class AddressSearchDropDown extends DropDownReceiver implements
             marker.setMovable(false);
             marker.setEditable(false);
             
+            // Store POI type for icon refresh on ATAK restart
+            if (poiType != null) {
+                marker.setMetaString("poiType", poiType.name());
+            }
+            
             // Check preference - if custom icons disabled, just use CoT type
             String internalIconUri = null;
             if (useCustomIcons && poiType != null) {
@@ -981,6 +986,11 @@ public class AddressSearchDropDown extends DropDownReceiver implements
         marker.setTitle(result.getDisplayName());
         marker.setMovable(false);
         marker.setEditable(false);
+        
+        // Store POI type for icon refresh on ATAK restart
+        if (poiType != null) {
+            marker.setMetaString("poiType", poiType.name());
+        }
         
         boolean useCustomIcons = isCustomIconsEnabled();
         
@@ -1800,6 +1810,92 @@ public class AddressSearchDropDown extends DropDownReceiver implements
         if (nearbyResultsAdapter != null) {
             nearbyResultsAdapter.clear();
         }
+    }
+
+    /**
+     * Refresh icons on existing POI markers.
+     * Called on plugin init to restore custom icons after ATAK restart.
+     */
+    public void refreshPoiIcons() {
+        MapGroup rootGroup = getMapView().getRootGroup();
+        if (rootGroup == null) {
+            Log.w(TAG, "Cannot refresh POI icons - root group is null");
+            return;
+        }
+        
+        MapGroup userObjects = rootGroup.findMapGroup("User Objects");
+        if (userObjects == null) {
+            Log.d(TAG, "No User Objects group found - no POI markers to refresh");
+            return;
+        }
+        
+        boolean useCustomIcons = isCustomIconsEnabled();
+        if (!useCustomIcons) {
+            Log.d(TAG, "Custom icons disabled - skipping POI icon refresh");
+            return;
+        }
+        
+        final int[] refreshCount = {0};
+        
+        userObjects.forEachItem(item -> {
+            if (item instanceof Marker) {
+                Marker marker = (Marker) item;
+                String uid = marker.getUID();
+                
+                // Check if it's one of our POI markers
+                if (uid != null && (uid.startsWith("poi-") || uid.startsWith("nearby-marker-"))) {
+                    String poiTypeName = marker.getMetaString("poiType", null);
+                    if (poiTypeName != null) {
+                        try {
+                            PointOfInterestType poiType = PointOfInterestType.valueOf(poiTypeName);
+                            applyIconToMarker(marker, poiType);
+                            refreshCount[0]++;
+                        } catch (IllegalArgumentException e) {
+                            Log.w(TAG, "Unknown POI type: " + poiTypeName);
+                        }
+                    }
+                }
+            }
+            return false; // continue iteration
+        });
+        
+        if (refreshCount[0] > 0) {
+            Log.i(TAG, "Refreshed icons on " + refreshCount[0] + " POI markers");
+        }
+    }
+    
+    /**
+     * Apply icon metadata to a marker based on its POI type.
+     * Used both when creating markers and when refreshing icons on restart.
+     */
+    private void applyIconToMarker(Marker marker, PointOfInterestType poiType) {
+        if (poiType == null) return;
+        
+        // Check for ATAK internal icons first
+        String internalIconUri = iconsetHelper.getInternalIconUri(poiType);
+        
+        if (internalIconUri != null) {
+            // Use ATAK's built-in internal icon
+            marker.setMetaString("iconUri", internalIconUri);
+            marker.setMetaString("usericon", internalIconUri);
+            marker.setMetaString("iconsetPath", internalIconUri);
+            marker.setMetaString("IconsetPath", internalIconUri);
+        } else {
+            // Fall back to iconset approach
+            com.atakmap.android.icons.UserIcon atakIcon = iconsetHelper.getAtakIcon(poiType);
+            if (atakIcon != null) {
+                String iconsetPath = atakIcon.getIconsetPath();
+                if (iconsetPath != null && !iconsetPath.isEmpty()) {
+                    marker.setMetaString("IconsetPath", iconsetPath);
+                    marker.setMetaString("iconsetPath", iconsetPath);
+                    marker.setMetaString("usericon", iconsetPath);
+                    marker.setMetaString("iconUri", iconsetPath);
+                }
+            }
+        }
+        
+        // Refresh the marker to apply the icon change
+        marker.refresh(getMapView().getMapEventDispatcher(), null, AddressSearchDropDown.class);
     }
 
     @Override

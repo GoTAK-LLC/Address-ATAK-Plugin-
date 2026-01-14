@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import com.atakmap.android.maps.MapItem;
 import com.atakmap.android.maps.MapView;
 import com.atakmap.android.maps.PointMapItem;
+import com.atakmap.android.maps.Shape;
 import com.atakmap.android.menu.MapMenuEventListener;
 import com.atakmap.android.menu.MapMenuReceiver;
 import com.atakmap.android.user.geocode.GeocodeManager;
@@ -202,6 +203,7 @@ public class MarkerSelectionWidget extends AbstractWidgetMapComponent
     /**
      * Called when the radial menu is shown for a map item.
      * This is the reliable way to detect when a marker is tapped/selected.
+     * Handles both PointMapItem (markers) and Shape (KML/KMZ objects, polygons, etc.)
      */
     @Override
     public boolean onShowMenu(MapItem item) {
@@ -216,8 +218,13 @@ public class MarkerSelectionWidget extends AbstractWidgetMapComponent
             PointMapItem pointItem = (PointMapItem) item;
             Log.d(TAG, "Item is PointMapItem, handling selection");
             handleMarkerSelected(pointItem);
+        } else if (item instanceof Shape) {
+            // Handle shapes like KML/KMZ polygons, polylines, circles, etc.
+            Shape shape = (Shape) item;
+            Log.d(TAG, "Item is Shape (" + item.getClass().getSimpleName() + "), handling selection");
+            handleShapeSelected(shape);
         } else if (item != null) {
-            Log.d(TAG, "Item is not PointMapItem, type: " + item.getClass().getSimpleName());
+            Log.d(TAG, "Item is not PointMapItem or Shape, type: " + item.getClass().getSimpleName());
         }
         
         // Return false to allow other listeners to process the event
@@ -260,6 +267,43 @@ public class MarkerSelectionWidget extends AbstractWidgetMapComponent
             title = item.getUID();
         }
         Log.d(TAG, "Marker selected: " + title + " at " + point.getLatitude() + ", " + point.getLongitude());
+        
+        // Show "Loading..." immediately while geocoding
+        updateWidget("Loading address...", COLOR_WHITE);
+        
+        // Perform geocoding in background
+        performGeocoding(point);
+    }
+    
+    /**
+     * Handle when a shape (KML/KMZ object, polygon, polyline, etc.) is selected/tapped.
+     * Uses the shape's center point for geocoding.
+     */
+    private void handleShapeSelected(Shape shape) {
+        if (shape == null) {
+            Log.w(TAG, "handleShapeSelected called with null shape");
+            return;
+        }
+        
+        // Get the center point of the shape
+        GeoPoint point = shape.getCenter().get();
+        if (point == null || !point.isValid()) {
+            Log.w(TAG, "Selected shape has invalid center point");
+            return;
+        }
+        
+        currentSelectedItem = shape;
+        
+        // Reset auto-hide timer
+        mainHandler.removeCallbacks(autoHideRunnable);
+        mainHandler.postDelayed(autoHideRunnable, AUTO_HIDE_TIMEOUT);
+        
+        // Get shape title for logging
+        String title = shape.getTitle();
+        if (title == null || title.isEmpty()) {
+            title = shape.getUID();
+        }
+        Log.d(TAG, "Shape selected: " + title + " (center: " + point.getLatitude() + ", " + point.getLongitude() + ")");
         
         // Show "Loading..." immediately while geocoding
         updateWidget("Loading address...", COLOR_WHITE);
@@ -444,6 +488,8 @@ public class MarkerSelectionWidget extends AbstractWidgetMapComponent
             Log.d(TAG, "Single tap on widget");
             if (currentSelectedItem instanceof PointMapItem) {
                 handleMarkerSelected((PointMapItem) currentSelectedItem);
+            } else if (currentSelectedItem instanceof Shape) {
+                handleShapeSelected((Shape) currentSelectedItem);
             }
         }
         

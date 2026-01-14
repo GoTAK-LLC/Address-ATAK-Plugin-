@@ -72,6 +72,13 @@ public class AddressMapComponent extends DropDownMapComponent {
                     "Hide the address search panel");
             this.registerDropDownReceiver(addressSearchDropDown, searchFilter);
             
+            // Refresh POI icons after ATAK restart (delay to ensure map is ready)
+            view.postDelayed(() -> {
+                if (addressSearchDropDown != null) {
+                    addressSearchDropDown.refreshPoiIcons();
+                }
+            }, 2000);
+            
             // Create and register the offline data dropdown receiver
             offlineDataDropDown = new OfflineDataDropDown(view, pluginContext);
             DocumentedIntentFilter offlineFilter = new DocumentedIntentFilter();
