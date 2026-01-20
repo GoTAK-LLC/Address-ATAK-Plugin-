@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Header row with title and save button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/views_header"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/views_header"
+            android:textColor="#00BCD4"
+            android:textSize="11sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.05"
+            android:fontFamily="sans-serif-medium"
+            android:paddingStart="4dp" />
+
+        <!-- Save current view button -->
+        <Button
+            android:id="@+id/views_save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="@string/save_view"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:background="@drawable/bg_button_accent"
+            android:paddingHorizontal="12dp"
+            android:drawableStart="@drawable/ic_add"
+            android:drawablePadding="4dp"
+            android:drawableTint="#FFFFFF"
+            android:minWidth="0dp" />
+
+    </LinearLayout>
+
+    <!-- Empty state -->
+    <LinearLayout
+        android:id="@+id/views_empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingVertical="32dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_views_empty"
+            android:alpha="0.5"
+            android:contentDescription="@string/no_saved_views" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_saved_views"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save_view_hint"
+            android:textColor="#666666"
+            android:textSize="11sp"
+            android:paddingTop="4dp"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+    <!-- Views list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/views_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/view_card_item" />
+
+</LinearLayout>
+

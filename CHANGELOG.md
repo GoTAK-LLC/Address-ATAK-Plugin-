@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.2.0] - 2026-01-20
+
+### Added
+- **Saved Views Tab** - New tab alongside Search and Nearby to save and restore map camera positions
+  - **Save Current View** captures full camera state:
+    - Latitude/longitude center point
+    - Map scale (zoom level)
+    - Camera tilt (pitch angle)
+    - Camera rotation (heading/azimuth)
+    - 2D/3D mode detection
+    - Thumbnail screenshot of current view
+    - Reverse-geocoded address
+  - **View Management**:
+    - Navigate - Click any saved view to restore exact camera position
+    - Rename - Customize view names with pencil icon
+    - Delete - Remove unwanted views
+  - **Persistent Storage** - Views saved to `/sdcard/atak/plugins/address/saved_views.json`
+  - Up to 50 saved views supported
+- **Custom URI Handler** (Experimental) - Navigate to coordinates via `addressview://navigate?lat=...&lon=...&zoom=...&tilt=...&rotation=...`
+
+### New Files
+- `SavedView.java` - Data model for saved views
+- `ViewsManager.java` - CRUD operations and persistence
+- `ViewsAdapter.java` - RecyclerView adapter for view cards
+- `ViewNavigationActivity.java` - Custom URI handler
+- `views_content.xml` - Views tab layout
+- `view_card_item.xml` - View card layout
+
+---
+
 ## [1.1.0] - 2026-01-09
 
 ### Added
